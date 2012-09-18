@@ -4,3 +4,5 @@
 thumbs.db
 build/*
 *.o
+*.log
+*out*
