@@ -12,7 +12,7 @@ void trimline(char *line) {
 
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
 PROCESS *readfiles() {
- printf("%d files\n",nfiles);
+ fprintf(logger,"%d files\n",nfiles);
  PROCESS *processes = malloc(nfiles*sizeof(PROCESS));
  if (files == NULL) {
   perror("Cannot allocate to processes");
@@ -22,7 +22,6 @@ PROCESS *readfiles() {
  FILE *fp;
  char **fparse = files;
   PROCESS *pp = processes;
-//  int i = 0; Probably redundant
 
  //Reading the files in one by one and storing to "processes"
  while (*fparse) {
@@ -40,16 +39,21 @@ PROCESS *readfiles() {
        if (isint(line)) pp->stime = strtol(line,NULL,10);
   
     else {
-	 printf("Start time missing from %s\n",*fparse);
+	 fprintf(stderr,"Start time missing from %s\n",*fparse);
 	 exit(0);
        }
      while (INFILE(fp)) { //Read rest of doc.
        fgets(line,sizeof line,fp);
        trimline(line);
+       //check for existence of ifline
+       if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
+	 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
+	 	 
+       }
        ++pp->nlines;
      }
    }
-   printf("Read file %s\n",*fparse);
+   fprintf(logger,"Read file %s\n",*fparse);
    fparse++;
    pp++;
   
@@ -58,7 +62,7 @@ PROCESS *readfiles() {
  
  pp = processes;
  for (int i = 0; i < nfiles; i++,pp++) {
-   printf("Process %s has starttime %d and %d lines\n",files[i],pp->stime,pp->nlines);
+   fprintf(logger,"Process %s has starttime %d and %d lines\n",files[i],pp->stime,pp->nlines);
  }
  
  
