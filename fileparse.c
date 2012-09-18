@@ -1,6 +1,6 @@
 #include "scheduler.h"
 
-void trimline(char *line) {
+void trimLine(char *line) {
   while (*line) {
     if (*line == '\n' || *line == '\r') {
       *line = '\0';
@@ -11,7 +11,7 @@ void trimline(char *line) {
 }
 
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
-PROCESS *readfiles() {
+PROCESS *readFiles() {
  fprintf(logger,"%d files\n",nfiles);
  PROCESS *processes = malloc(nfiles*sizeof(PROCESS));
  if (files == NULL) {
@@ -35,7 +35,7 @@ PROCESS *readfiles() {
      char line[BUFSIZ];
      
      fgets(line,sizeof line,fp); //Read first line
-       trimline(line);
+       trimLine(line);
        if (isint(line)) pp->stime = strtol(line,NULL,10);
   
     else {
@@ -44,7 +44,7 @@ PROCESS *readfiles() {
        }
      while (INFILE(fp)) { //Read rest of doc.
        fgets(line,sizeof line,fp);
-       trimline(line);
+       trimLine(line);
        //check for existence of ifline
        if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
 	 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
@@ -74,7 +74,7 @@ PROCESS *readfiles() {
 }
 
 /** Parses the in.file to get the name of all the input files */
-PROCESS *parsefiles(char *fname) {
+PROCESS *parseFiles(char *fname) {
   //attempt to open file
   FILE *fp;
   if ((fp = fopen(fname,"r")) == NULL) {
@@ -93,7 +93,7 @@ PROCESS *parsefiles(char *fname) {
     char line[BUFSIZ];
     while (INFILE(fp)) {
       fgets(line,sizeof line,fp);
-      trimline(line);
+      trimLine(line);
       files[nfiles] = malloc(sizeof line);
       if (files == NULL) {
 	perror("Cannot allocate to files");
@@ -106,5 +106,5 @@ PROCESS *parsefiles(char *fname) {
   }
   fclose(fp);
   
-  return readfiles();
+  return readFiles();
 }

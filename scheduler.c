@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   
   char *algorithm = alg_flag == RRALG ? "Round Robin" : "First Come First Served";
   if (lf) fprintf(logger,"Using Algorithm: %s\n",algorithm);
-  parsefiles(*argv);
+  PROCESS* processes = parseFiles(*argv);
   if (lf) fprintf(logger,"%d files successfully read\n",nfiles);
   fclose(logger);
   return 0;

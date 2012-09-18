@@ -53,9 +53,10 @@ extern int cmp_by_start_time(const void*, const void*);
 extern char **files;
 
 /*
- * Parses a file and returns it as a process structure.
+ * Parses each file contained within the jobs file and stores each as a process structure.
+ * Returns a pointer to all the process structures that were constructed by parseFiles
  */
-extern PROCESS * parsefiles(char*);
+extern PROCESS * parseFiles(char*);
 
 extern int alg_flag;
 extern int time_quant;
