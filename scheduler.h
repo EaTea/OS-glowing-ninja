@@ -23,8 +23,6 @@ typedef struct {
   IFLINE iflines[BUFSIZ];
 } PROCESS;
 
-
-
 extern char *progname;
 
 /*
