@@ -5,12 +5,12 @@ CC	= gcc -std=c99
 CFLAGS 	= -Wall -pedantic -g -O2
 
 SOURCES= scheduler.c fileparse.c globals.c auxfns.c
-OBJ= $(SOURCES:%.c=$(BUILD_DIR)/%.o)
+OBJ= $(SOURCES:%.c=%.o)
 
 $(PROJ)	: $(OBJ)
 	$(CC) -o build/$(PROJ) $(OBJ)
 
-$(BUILD_DIR)/%.o	: %.c $(HEADER)
+%.o	: %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $<
 
 clean:	
