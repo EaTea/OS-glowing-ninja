@@ -1,11 +1,19 @@
 #!/bin/bash
 #REMEMBER TO MAKE THIS FILE EXECUTABLE
-for i in *.file 
+echo "Attempting to run ../build/scheduler with each file with a .jobs extension"
+for i in *.jobs 
 	do
+	echo "file = $i"
+	echo "RR: Round Robin Scheduling Algorithm"
+#TODO: Make this prettier. Possibilities include putting into a file? Making this list user specified?
+#http://stackoverflow.com/questions/3939196/run-command-line-arguments-in-python-script 
+#the above link recommends using $@
 	for k in {2,5,8,10,12,15,20,30,32,50,65}
 		do
+		echo "Time Quantum: $k"
 		../build/scheduler RR $k $i
 	done
+	echo "FCFS: First Come First Serve Scheduling Algorithm"
 	../build/scheduler FCFS $i
 done
 mv program.log ../logs/$(date '+%F-%T')-program.log
