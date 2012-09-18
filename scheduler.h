@@ -34,4 +34,5 @@ extern PROCESS *parsefiles(char*);
 extern int alg_flag;
 extern int time_quant;
 extern int nfiles;
-extern FILE *log;
+extern FILE *logger;
+extern int lf;
