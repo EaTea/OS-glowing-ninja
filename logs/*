@@ -1,0 +1,57 @@
+
+===========================
+Using Algorithm: 1
+4 files
+Read file easyfile.txt
+Read file file2.txt
+Read file iffile.txt
+Read file bigfile.txt
+Process easyfile.txt has starttime 5 and 3 lines
+Process file2.txt has starttime 2 and 4 lines
+Process iffile.txt has starttime 7 and 2 lines
+Process bigfile.txt has starttime 8 and 1228 lines
+4 files successfully read
+
+===========================
+Using Algorithm: 2
+4 files
+Read file easyfile.txt
+Read file file2.txt
+IF LINE FOUND IN iffile.txt, line 1: 
+"if i=3 goto 4"Read file iffile.txt
+Read file bigfile.txt
+Process easyfile.txt has starttime 5 and 3 lines
+Process file2.txt has starttime 2 and 4 lines
+Process iffile.txt has starttime 7 and 2 lines
+Process bigfile.txt has starttime 8 and 1228 lines
+4 files successfully read
+
+===========================
+Using Algorithm: 2
+4 files
+Read file easyfile.txt
+Read file file2.txt
+IF LINE FOUND IN iffile.txt, line 1: 
+"if i=3 goto 4"
+Read file iffile.txt
+Read file bigfile.txt
+Process easyfile.txt has starttime 5 and 3 lines
+Process file2.txt has starttime 2 and 4 lines
+Process iffile.txt has starttime 7 and 2 lines
+Process bigfile.txt has starttime 8 and 1228 lines
+4 files successfully read
+
+===========================
+Using Algorithm: Round Robin
+4 files
+Read file easyfile.txt
+Read file file2.txt
+IF LINE FOUND IN iffile.txt, line 3: 
+"if i=3 goto 4"
+Read file iffile.txt
+Read file bigfile.txt
+Process easyfile.txt has starttime 5 and 3 lines
+Process file2.txt has starttime 2 and 4 lines
+Process iffile.txt has starttime 7 and 2 lines
+Process bigfile.txt has starttime 8 and 1228 lines
+4 files successfully read
