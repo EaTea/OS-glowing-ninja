@@ -9,9 +9,10 @@
 #define INFILE(a) !(feof(a) || ferror(a))
 
 typedef struct {
-    int ifvar; //The character for the variable
+    char ifvar; //The character for the variable
     int gotoline;
     int looped;
+    int max;
 } IFLINE;
 
 typedef struct {
