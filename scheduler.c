@@ -4,10 +4,8 @@ int main(int argc, char *argv[]) {
   
   //Enable logging
   logger = fopen("program.log","a"); 
-  if (logger == NULL) {
-    perror("Could not open log file. No data will be logged"); lf = 0;
-  } else lf = 1;
-  if (lf) fputs("\n===========================\n",logger);
+	setupLogging();
+	newLogSession();
   progname = *argv;
   argc--; argv++; //Skip progname
   if (argc > 3 || argc < 2) {

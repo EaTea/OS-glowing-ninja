@@ -14,3 +14,10 @@ int isint(char *str) {
     else str++;
   } return 1;
 }
+
+int cmp_by_start_time(const void* a, const void* b)
+{
+	PROCESS* elem1 = (PROCESS*) a;
+	PROCESS* elem2 = (PROCESS*) b;
+	return elem1->stime - elem2->stime;
+}
