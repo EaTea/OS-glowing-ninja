@@ -1,4 +1,4 @@
-PROJ	= scheduler
+PROJ	= os-project
 BUILD_DIR = build
 HEADER	= $(PROJ).h
 CC	= gcc -std=c99
