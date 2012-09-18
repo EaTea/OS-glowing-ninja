@@ -1,0 +1,3 @@
+ERROR: Invalid or missing time quantum for RR
+Usage: './scheduler FCFS in.file' or './scheduler RR n in.file
+where in.file is a list of job files, and n is an integer representing a time quantum
