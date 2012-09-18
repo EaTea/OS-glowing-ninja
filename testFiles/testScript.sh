@@ -9,3 +9,4 @@ for i in *.file
 	../build/scheduler FCFS $i
 done
 mv program.log ../logs/$(date '+%F-%T')-program.log
+echo "The .log file has been moved to ../logs."
