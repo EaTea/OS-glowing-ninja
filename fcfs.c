@@ -1,0 +1,15 @@
+#include "scheduler.h"
+
+void fcfs_algorithm(PROCESS* processes, int nProcesses)
+{
+	qsort(processes,nProcesses,sizeof(PROCESS),cmpByStartTime);
+	int currentTime = 0;
+	for(int pId = 0; pId < nProcesses; pId++)
+	{
+		currentTime = max(processes[pId].stime, currentTime);
+		processes[pId].nTimeSlots = 2;
+		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,2*sizeof(int));
+		processes[pId].scheduledTimeSlots[0] = currentTime;
+		processes[pId].scheduledTimeSlots[1] = currentTime + processes[pId].runningTime;
+	}
+}

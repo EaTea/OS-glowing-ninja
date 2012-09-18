@@ -22,6 +22,8 @@ typedef struct {
   int nifs;
 	int runningTime;
   IFLINE iflines[BUFSIZ];
+	int nTimeSlots;
+	int* scheduledTimeSlots;
 } PROCESS;
 
 extern char *progname;
@@ -47,7 +49,7 @@ extern int isint(char*);
  *  - zero if a and b start at the same time
  *  - a positive number if a starts after b
  */
-extern int cmp_by_start_time(const void*, const void*);
+extern int cmpByStartTime(const void*, const void*);
 
 /*
  * Returns the maximum of two integers

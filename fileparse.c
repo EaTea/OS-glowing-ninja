@@ -57,6 +57,7 @@ PROCESS *readFiles() {
 			 }
 			 ++pp->nlines;
 		 }
+		 pp->nTimeSlots = 0;
 	 }
 	 fprintf(logger,"Read file %s\n",*fparse);
 	 fparse++;
@@ -92,6 +93,7 @@ PROCESS *parseFiles(char *fname) {
     char line[BUFSIZ];
     while (INFILE(fp)) {
       fgets(line,sizeof line,fp);
+			//TODO: what about an empty line?
       trimLine(line);
       files[nfiles] = malloc(sizeof line);
       if (files == NULL) {

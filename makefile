@@ -4,7 +4,7 @@ HEADER	= $(PROJ).h
 CC	= gcc -std=c99
 CFLAGS 	= -Wall -pedantic -g -O2
 
-SOURCES= scheduler.c fileparse.c globals.c auxfns.c logger.c
+SOURCES= scheduler.c fileparse.c globals.c auxfns.c logger.c fcfs.c
 OBJ= $(SOURCES:%.c=%.o)
 
 $(PROJ)	: $(OBJ)
