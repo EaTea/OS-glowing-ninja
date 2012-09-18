@@ -21,3 +21,13 @@ int cmp_by_start_time(const void* a, const void* b)
 	PROCESS* elem2 = (PROCESS*) b;
 	return elem1->stime - elem2->stime;
 }
+
+int max(int a, int b)
+{
+	return a < b ? b : a;
+}
+
+int min(int a, int b)
+{
+	return a < b ? a : b;
+}

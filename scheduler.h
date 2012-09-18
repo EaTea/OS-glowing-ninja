@@ -20,6 +20,7 @@ typedef struct {
   int stime;
   int nlines;
   int nifs;
+	int runningTime;
   IFLINE iflines[BUFSIZ];
 } PROCESS;
 
@@ -47,6 +48,16 @@ extern int isint(char*);
  *  - a positive number if a starts after b
  */
 extern int cmp_by_start_time(const void*, const void*);
+
+/*
+ * Returns the maximum of two integers
+ */
+extern int max(int, int);
+
+/*
+ * Returns the minimum of two integers
+ */
+extern int min(int, int);
 
 extern char **files;
 
