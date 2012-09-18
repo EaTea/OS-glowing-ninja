@@ -1,8 +1,14 @@
 #include "scheduler.h"
 
 int main(int argc, char *argv[]) {
-  FILE *log = fopen("program.log","a");
-  if (log == NULL) perror("Could not open log file. No data will be logged");
+  
+  //Enable logging
+  *log = fopen("program.log","a"); 
+  if (log == NULL) {
+    perror("Could not open log file. No data will be logged"); lf = 0;
+  } else lf = 1;
+  if (lf) fputs(log,"===========================");
+  
   progname = *argv;
   argc--; argv++; //Skip progname
   if (argc > 3 || argc < 2) {
@@ -30,15 +36,15 @@ int main(int argc, char *argv[]) {
       usage(); 
       exit(0); 
     }
-    printf("%d\n",time_quant);
+    if (lf) fprintf(log,"%d\n",time_quant);
     argv++;
   }
   
   //parse input program.
   
   
-  fprintf(log,"Using Algorithm: %d\n",alg_flag);
+  if (lf) fprintf(log,"Using Algorithm: %d\n",alg_flag);
   parsefiles(*argv);
-  printf("%d files successfully read\n",nfiles);
+  if (lf) fprintf(log,"%d files successfully read\n",nfiles);
   return 0;
 }
