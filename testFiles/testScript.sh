@@ -4,7 +4,10 @@ echo "Attempting to run ../build/scheduler with each file with a .jobs extension
 for i in *.jobs 
 	do
 	echo "file = $i"
-	echo "RR: Round Robin Scheduling Algorithm"
+	if [ "$#" -lt "0" ];
+	then
+		echo "RR: Round Robin Scheduling Algorithm"
+	fi
 	for k in $@
 		do
 		echo "Time Quantum: $k"

@@ -15,3 +15,6 @@ $(PROJ)	: $(OBJ)
 
 clean:	
 	rm -f $(BUILD_DIR)/$(PROJ) $(OBJ)
+
+cleanLog:
+	rm -f logs/*
