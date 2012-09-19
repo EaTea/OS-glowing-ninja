@@ -4,7 +4,7 @@ echo "Attempting to run ../build/scheduler with each file with a .jobs extension
 for i in *.jobs 
 	do
 	echo "file = $i"
-	if [ "$#" -lt "0" ];
+	if [ "$#" -gt "0" ];
 	then
 		echo "RR: Round Robin Scheduling Algorithm"
 	fi
