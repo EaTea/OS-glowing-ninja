@@ -11,7 +11,7 @@ void fcfs_algorithm(PROCESS* processes, int nProcesses)
 		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,nTimeSlots * sizeof(int));
 		processes[pId].scheduledTimeSlots[0] = currentTime;
 		//TODO: make the function commented out below
-		//runProcess(processes[pId]);
+		//runProcess(processes[pId], 0);
 		processes[pId].scheduledTimeSlots[1] = currentTime + processes[pId].runningTime;
 	}
 }
