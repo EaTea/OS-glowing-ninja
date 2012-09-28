@@ -2,7 +2,7 @@
 //#include "queue.h"
 
 void fcfs(PROCESS *ps) {
-  
+  int time = 0;
 }
 
 void rr(PROCESS *ps, int tq) {
