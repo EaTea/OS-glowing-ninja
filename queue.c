@@ -4,7 +4,7 @@ QUEUE new_queue(int n) {
   QUEUE *q = malloc(sizeof(QUEUE));
   q->els = malloc((n+1)*sizeof(PROCESS*));
   //q[q->first] = NULL;
-  q->length = n+1;
+  q->length = n+1	;
   q->first = 0;
   q->last = -1;
   return *q;

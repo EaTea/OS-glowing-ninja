@@ -1,7 +1,7 @@
 #include "os-project.h"
 
 void fcfs(PROCESS *ps) {
-  int time = 0;
+//  int time = 0;
 }
 
 void rr(PROCESS *ps, int tq) {
@@ -56,24 +56,24 @@ int main(int argc, char *argv[]) {
   }
   
   //parse input program.
-  
-  char *algorithm = alg_flag == RRALG ? "Round Robin" : "First Come First Served";
-  if (lf) fprintf(logger,"Using Algorithm: %s\n",algorithm);
+  if (lf) {
+    char *algorithm = alg_flag == RRALG ? "Round Robin" : "First Come First Served";
+    fprintf(logger,"Using Algorithm: %s\n",algorithm);
+  }
   PROCESS* processes = parseFiles(*argv);
   if (lf) fprintf(logger,"%d files successfully read\n",nfiles);
   PROCESS* p = processes;
   if (lf) {
-    for (int i = 0; i < nfiles; i++,p++) {
-			fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
-		}
-	}
+    for (int i = 0; i < nfiles; i++,p++)
+      fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
+  }
  
   qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime);
   p = processes;
   if (lf) {
     fprintf(logger,"PROCESS ARRAY NOW SORTED\n");
     for (int i = 0; i < nfiles; i++,p++) fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
-  }		
+  }
   
   schedule(alg_flag,processes);
     

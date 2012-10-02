@@ -19,7 +19,7 @@ PROCESS *readFiles() {
   exit(0);
  }
  
- FILE *fp;
+ FILE *fp = NULL;
  char **fparse = files;
   PROCESS *pp = processes;
 
@@ -34,17 +34,22 @@ PROCESS *readFiles() {
    } else { //Parse the file line-by-line
      char line[BUFSIZ];
      
-     fgets(line,sizeof line,fp); //Read first line
-		 trimLine(line);
+     if (fgets(line,sizeof line,fp) == NULL) { //Read first line
+       perror("Reading line");
+       exit(1); 
+     }
+     trimLine(line);
 		 if (isint(line)) pp->stime = strtol(line,NULL,10);
 
 		 else {
 			 fprintf(stderr,"Start time missing from %s\n",*fparse);
-			 //TODO: should this be exit(0)? or exit(1)?
-			 exit(0);
+			 exit(1);
 		 }
 		 while (INFILE(fp)) { //Read rest of doc.
-			 fgets(line,sizeof line,fp);
+			 if (fgets(line,sizeof line,fp) == NULL) { //Read first line
+			  perror("Reading line");
+			  exit(1); 
+			 }
 			 trimLine(line);
 			 //check for existence of ifline
 			 if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
@@ -92,8 +97,12 @@ PROCESS *parseFiles(char *fname) {
     //Parsing all the filenames.
     char line[BUFSIZ];
     while (INFILE(fp)) {
-      fgets(line,sizeof line,fp);
-			//TODO: what about an empty line?
+      if (fgets(line,sizeof line,fp) == NULL) { //Read first line
+       perror("Reading line");
+       exit(1); 
+     }
+			//TODO: what about an empty line? 
+			//- Won't happen, can assume mostly valid input ie each line has content.
       trimLine(line);
       files[nfiles] = malloc(sizeof line);
       if (files == NULL) {
@@ -103,7 +112,6 @@ PROCESS *parseFiles(char *fname) {
       strcpy(files[nfiles],line);
       ++nfiles;
     }
-//     realloc(files,(nfiles+1)*sizeof(char*)); //NOT SURE IF THIS LINE SHOULD BE THERE -- COULD CAUSE PROBLEMS!
   }
   fclose(fp);
   
