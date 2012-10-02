@@ -12,7 +12,8 @@ void trimLine(char *line) {
 
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
 PROCESS *readFiles() {
-	if (lf) fprintf(logger,"%d files\n",nfiles);
+	if (lf)
+		fprintf(logger,"%d files\n",nfiles);
 	PROCESS *processes = malloc(nfiles*sizeof(PROCESS));
 	if (files == NULL) {
 		perror("Cannot allocate to processes");
@@ -24,67 +25,74 @@ PROCESS *readFiles() {
 
 	//Reading the files in one by one and storing to "processes"
 	for(int fileCount = 0; fileCount < nfiles; fileCount++) {
-	//while (*fparse) {
+
 		char **fparse = files + fileCount;
-		
 		if ((fp = fopen(*fparse,"r")) == NULL) {
 			char error[BUFSIZ];
 			sprintf(error,"Cannot open %s",*files);
+			fprintf(logger, "Fatal Error: %s\n", error);
 			perror(error);
 			exit(0); //Exit if reading file fails -- MAY NOT BE THE CASE!
-		}
-		
-		//Parse the file line-by-line
-		char line[BUFSIZ];
-		
-		if (fgets(line,sizeof line,fp) == NULL) {//Read first line
-			perror("Cannot process file");
-			exit(0);
+
 		} else {
-			trimLine(line);
-			if (isint(line))
-			{
-				//file is valid and has a start time at the beginning
-				pp->stime = strtol(line,NULL,10);
-				//construct a new process and initialise its default values
-				pp->nlines = pp->nifs = pp->runningTime = 0;
-				//apparently causes a memory access error if not first set to NULL
-				pp->iflines = (IFLINE*) NULL;
-				pp->scheduledTimeSlots = (int*) NULL;
-				pp->nTimeSlots = 0;
-			}
-			else {
-				fprintf(stderr,"Start time missing from %s\n",*fparse);
-				exit(1);
-			}
-			
-			while (INFILE(fp)) { //Read rest of doc.
-				if (fgets(line,sizeof line,fp) == NULL) {
-					perror("Cannot process file");
+
+			//Parse the file line-by-line
+			char line[BUFSIZ];
+		 
+			if (fgets(line,sizeof line,fp) == NULL) {//Read first line
+				perror("Cannot process file");
+				exit(0);
+			} else {
+				trimLine(line);
+				if (isint(line)) {
+					//file is valid and has a start time at the beginning
+					pp->stime = strtol(line,NULL,10);
+					//construct a new process and initialise its default values
+					pp->nlines = pp->nifs = pp->runningTime = 0;
+					//apparently causes a memory access error if not first set to NULL
+					pp->iflines = (IFLINE*) NULL;
+					pp->scheduledTimeSlots = (int*) NULL;
+					pp->nTimeSlots = 0;
+				} else {
+					fprintf(stderr,"Start time missing from %s\n",*fparse);
+					fprintf(logger, "Fatal Error: Start time missing from %s\n",*fparse);
+					//TODO: should this be exit(0)? or exit(1)?
 					exit(0);
 				}
-				trimLine(line);
-				//check for existence of ifline
-				if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
-					if (lf) fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
-					IFLINE il = pp->iflines[pp->nifs];
-					char c;
-					sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.looped),&c,&c,&(il.gotoline));
-					if (lf) fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.looped,il.gotoline);
-					++pp->nifs;
+			
+				while (INFILE(fp)) { //Read rest of doc.
+					fgets(line,sizeof line,fp);
+					trimLine(line);
+					++(pp->nlines);
+					//check for existence of ifline
+					if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
+						//found a new IFLINE
+						fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
+						//increase number of iflines recorded
+						++(pp->nifs);
+						//increase size of IFLINE array by 1
+						pp->iflines = (IFLINE*) realloc(pp->iflines, (pp->nifs)*sizeof(IFLINE));
+						IFLINE* il = pp->iflines + (pp->nifs - 1);
+						//the line that this ifline is on
+						il->originline = pp->nlines;
+						il->looped = 0;
+						//sentinel character
+						char c;
+						//read using sscanf
+						sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il->ifvar),&(il->loopLimit),&c,&c,&(il->gotoline));
+						fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
+					}
 				}
-				++pp->nlines;
 			}
-		}
 		
-		if (lf) fprintf(logger,"Read file %s\n",*fparse);
-		fparse++;
-		pp++;
+			if (lf) fprintf(logger,"Read file %s\n",*fparse);
+			fparse++;
+			pp++;
+		}
+		fclose(fp);
 	}
-	fclose(fp);
 
 	pp = processes;
-	
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
 			fprintf(logger,"Process %s has starttime %d and %d lines, with %d ifs\n",files[i],pp->stime,pp->nlines,pp->nifs);
@@ -123,9 +131,9 @@ PROCESS *parseFiles(char *fname) {
 			strcpy(files[nfiles],line);
 			++nfiles;
 		}
-		
+		//realloc(files,(nfiles+1)*sizeof(char*)); //NOT SURE IF THIS LINE SHOULD BE THERE -- COULD CAUSE PROBLEMS!
 	}
 	fclose(fp);
-
+	
 	return readFiles();
 }
