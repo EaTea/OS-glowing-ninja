@@ -22,8 +22,6 @@ typedef struct {
 } IFLINE;
 
 typedef struct {
-	//TODO: is curline necessary?
-  int curline;
 	//start time
   int stime;
 	//number of lines
