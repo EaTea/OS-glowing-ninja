@@ -1,6 +1,6 @@
 #!/bin/bash
 #REMEMBER TO MAKE THIS FILE EXECUTABLE
-echo "Attempting to run ../build/scheduler with each file with a .jobs extension"
+echo "Attempting to run ../build/os-project with each file with a .jobs extension"
 for i in *.jobs 
 	do
 	echo "file = $i"
@@ -11,10 +11,10 @@ for i in *.jobs
 	for k in $@
 		do
 		echo "Time Quantum: $k"
-		../build/scheduler RR $k $i
+		../build/os-project RR $k $i
 	done
 	echo "FCFS: First Come First Serve Scheduling Algorithm"
-	../build/scheduler FCFS $i
+	../build/os-project FCFS $i
 done
 mv program.log ../logs/$(date '+%F-%T')-program.log
 echo "The .log file has been moved to ../logs."

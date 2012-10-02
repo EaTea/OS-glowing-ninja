@@ -1,4 +1,4 @@
-#include "scheduler.h"
+#include "os-project.h"
 
 void trimLine(char *line) {
   while (*line) {
