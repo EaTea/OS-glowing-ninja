@@ -33,8 +33,7 @@ typedef struct {
 	//length of time process requires to run
 	int runningTime;
 	//each IFLINE
-	//TODO: should be dynamically allocated?
-  IFLINE iflines[BUFSIZ];
+  IFLINE* iflines;
 	//number of time slots allocated for a process
 	int nTimeSlots;
 	//each of the time slots scheduled for serving a process
