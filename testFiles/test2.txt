@@ -1,0 +1,7 @@
+100
+a
+b
+if i < 1 i=i+1 goto 5
+c
+d
+end

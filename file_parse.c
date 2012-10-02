@@ -19,7 +19,7 @@ PROCESS *readFiles() {
   exit(0);
  }
  
- FILE *fp = NULL;
+ FILE *fp;
  char **fparse = files;
   PROCESS *pp = processes;
 
@@ -34,35 +34,29 @@ PROCESS *readFiles() {
    } else { //Parse the file line-by-line
      char line[BUFSIZ];
      
-     if (fgets(line,sizeof line,fp) == NULL) { //Read first line
-       perror("Reading line");
-       exit(1); 
-     }
-     trimLine(line);
+     fgets(line,sizeof line,fp); //Read first line
+		 trimLine(line);
 		 if (isint(line)) pp->stime = strtol(line,NULL,10);
 
 		 else {
 			 fprintf(stderr,"Start time missing from %s\n",*fparse);
-			 exit(1);
+			 //TODO: should this be exit(0)? or exit(1)?
+			 exit(0);
 		 }
 		 while (INFILE(fp)) { //Read rest of doc.
-			 if (fgets(line,sizeof line,fp) == NULL) { //Read first line
-			  perror("Reading line");
-			  exit(1); 
-			 }
+			 fgets(line,sizeof line,fp);
 			 trimLine(line);
 			 //check for existence of ifline
 			 if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
 				 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
 				 IFLINE il = pp->iflines[pp->nifs];
 				 char c;
-				 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.loopLimit),&c,&c,&(il.gotoline));
-				 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.loopLimit,il.gotoline);
+				 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.max),&c,&c,&(il.gotoline));
+				 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.max,il.gotoline);
 				 ++pp->nifs;
 			 }
 			 ++pp->nlines;
 		 }
-		 pp->nTimeSlots = 0;
 	 }
 	 fprintf(logger,"Read file %s\n",*fparse);
 	 fparse++;
@@ -97,12 +91,7 @@ PROCESS *parseFiles(char *fname) {
     //Parsing all the filenames.
     char line[BUFSIZ];
     while (INFILE(fp)) {
-      if (fgets(line,sizeof line,fp) == NULL) { //Read first line
-       perror("Reading line");
-       exit(1); 
-     }
-			//TODO: what about an empty line? 
-			//- Won't happen, can assume mostly valid input ie each line has content.
+      fgets(line,sizeof line,fp);
       trimLine(line);
       files[nfiles] = malloc(sizeof line);
       if (files == NULL) {
@@ -112,6 +101,7 @@ PROCESS *parseFiles(char *fname) {
       strcpy(files[nfiles],line);
       ++nfiles;
     }
+//     realloc(files,(nfiles+1)*sizeof(char*)); //NOT SURE IF THIS LINE SHOULD BE THERE -- COULD CAUSE PROBLEMS!
   }
   fclose(fp);
   

@@ -9,20 +9,19 @@
 #define INFILE(a) !(feof(a) || ferror(a))
 
 typedef struct {
-    char ifvar; //The character for the variable
-		//line to go to
-    int gotoline;
-		//line to go from?
-		int originline;
-		//looped
-    int looped;
-		//k --- the value ifvar must be less than for the if loop to continue
-    int loopLimit;
+	//The character for the variable
+	char ifvar;
+	//line to go to
+  int gotoline;
+	//line to go from?
+	int originline;
+	//looped
+	int looped;
+	//k --- the value ifvar must be less than for the if loop to continue
+	int loopLimit;
 } IFLINE;
 
 typedef struct {
-	//TODO: is curline necessary?
-  int curline;
 	//start time
   int stime;
 	//number of lines
@@ -32,8 +31,7 @@ typedef struct {
 	//length of time process requires to run
 	int runningTime;
 	//each IFLINE
-	//TODO: should be dynamically allocated?
-  IFLINE iflines[BUFSIZ];
+  IFLINE* iflines;
 	//number of time slots allocated for a process
 	int nTimeSlots;
 	//each of the time slots scheduled for serving a process
