@@ -1,4 +1,4 @@
-#include "scheduler.h"
+#include "os-project.h"
 
 void fcfs_algorithm(PROCESS* processes, int nProcesses)
 {
