@@ -9,15 +9,16 @@
 #define INFILE(a) !(feof(a) || ferror(a))
 
 typedef struct {
-    char ifvar; //The character for the variable
-		//line to go to
-    int gotoline;
-		//line to go from?
-		int originline;
-		//looped
-    int looped;
-		//k --- the value ifvar must be less than for the if loop to continue
-    int loopLimit;
+	//The character for the variable
+	char ifvar;
+	//line to go to
+  int gotoline;
+	//line to go from?
+	int originline;
+	//looped
+	int looped;
+	//k --- the value ifvar must be less than for the if loop to continue
+	int loopLimit;
 } IFLINE;
 
 typedef struct {
