@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "scheduler.h"
+#include "os-project.h"
 
 /**Definition of a Circular Array Queue*/
 typedef struct q {
