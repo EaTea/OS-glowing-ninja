@@ -20,12 +20,13 @@ PROCESS *readFiles() {
 	}
 
 	FILE *fp;
-	char **fparse = files;
 	PROCESS *pp = processes;
 
 	//Reading the files in one by one and storing to "processes"
-	while (*fparse) {
-
+	for(int fileCount = 0; fileCount < nfiles; fileCount++) {
+	//while (*fparse) {
+		char **fparse = files + fileCount;
+		
 		if ((fp = fopen(*fparse,"r")) == NULL) {
 			char error[BUFSIZ];
 			sprintf(error,"Cannot open %s",*files);
