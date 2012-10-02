@@ -22,7 +22,9 @@ typedef struct {
   int nifs;
 	int runningTime;
   IFLINE iflines[BUFSIZ];
+	//number of time slots allocated for a process
 	int nTimeSlots;
+	//each of the time slots scheduled for serving a process
 	int* scheduledTimeSlots;
 } PROCESS;
 

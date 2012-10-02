@@ -59,13 +59,16 @@ int main(int argc, char *argv[]) {
   
   char *algorithm = alg_flag == RRALG ? "Round Robin" : "First Come First Served";
   if (lf) fprintf(logger,"Using Algorithm: %s\n",algorithm);
-  parseFiles(*argv);
+  PROCESS* processes = parseFiles(*argv);
   if (lf) fprintf(logger,"%d files successfully read\n",nfiles);
   PROCESS* p = processes;
-  if (lf) 
-    for (int i = 0; i < nfiles; i++,p++) fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
+  if (lf) {
+    for (int i = 0; i < nfiles; i++,p++) {
+			fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
+		}
+	}
  
-  qsort(processes,nfiles,sizeof(PROCESS),cmp_by_start_time);
+  qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime);
   p = processes;
   if (lf) {
     fprintf(logger,"PROCESS ARRAY NOW SORTED\n");

@@ -8,7 +8,7 @@ void fcfs_algorithm(PROCESS* processes, int nProcesses)
 	{
 		currentTime = max(processes[pId].stime, currentTime);
 		processes[pId].nTimeSlots = 2;
-		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,nTimeSlots * sizeof(int));
+		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,processes[pId].nTimeSlots * sizeof(int));
 		processes[pId].scheduledTimeSlots[0] = currentTime;
 		//TODO: make the function commented out below
 		//runProcess(processes[pId], 0);
