@@ -19,7 +19,7 @@ PROCESS *readFiles() {
 		exit(0);
 	}
 
-	FILE *fp;
+	FILE *fp = NULL;
 	char **fparse = files;
 	PROCESS *pp = processes;
 
@@ -35,7 +35,10 @@ PROCESS *readFiles() {
 		//Parse the file line-by-line
 		char line[BUFSIZ];
 		
-		if (fgets(line,sizeof line,fp) == null) {//Read first line
+		if (fgets(line,sizeof line,fp) == NULL) {//Read first line
+			perror("Cannot process file");
+			exit(0);
+		} else {
 			trimLine(line);
 			if (isint(line)) pp->stime = strtol(line,NULL,10);
 			else {
@@ -44,15 +47,18 @@ PROCESS *readFiles() {
 			}
 			
 			while (INFILE(fp)) { //Read rest of doc.
-				fgets(line,sizeof line,fp);
+				if (fgets(line,sizeof line,fp) == NULL) {
+					perror("Cannot process file");
+					exit(0);
+				}
 				trimLine(line);
 				//check for existence of ifline
 				if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
 					if (lf) fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
 					IFLINE il = pp->iflines[pp->nifs];
 					char c;
-					sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.max),&c,&c,&(il.gotoline));
-					if (lf) fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.max,il.gotoline);
+					sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.looped),&c,&c,&(il.gotoline));
+					if (lf) fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.looped,il.gotoline);
 					++pp->nifs;
 				}
 				++pp->nlines;
@@ -93,7 +99,10 @@ PROCESS *parseFiles(char *fname) {
 		char line[BUFSIZ];
 		
 		while (INFILE(fp)) {
-			fgets(line,sizeof line,fp);
+			if (fgets(line,sizeof line,fp)== NULL) {
+				perror("Cannot process file");
+				exit(0);
+			}
 			trimLine(line);
 			files[nfiles] = malloc(sizeof line);
 			if (files == NULL) {
