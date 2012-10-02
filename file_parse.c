@@ -19,12 +19,14 @@ PROCESS *readFiles() {
 		exit(0);
 	}
 
-	FILE *fp = NULL;
-	char **fparse = files;
+	FILE *fp;
 	PROCESS *pp = processes;
 
 	//Reading the files in one by one and storing to "processes"
-	while (*fparse) {
+	for(int fileCount = 0; fileCount < nfiles; fileCount++) {
+	//while (*fparse) {
+		char **fparse = files + fileCount;
+		
 		if ((fp = fopen(*fparse,"r")) == NULL) {
 			char error[BUFSIZ];
 			sprintf(error,"Cannot open %s",*files);
@@ -40,7 +42,17 @@ PROCESS *readFiles() {
 			exit(0);
 		} else {
 			trimLine(line);
-			if (isint(line)) pp->stime = strtol(line,NULL,10);
+			if (isint(line))
+			{
+				//file is valid and has a start time at the beginning
+				pp->stime = strtol(line,NULL,10);
+				//construct a new process and initialise its default values
+				pp->nlines = pp->nifs = pp->runningTime = 0;
+				//apparently causes a memory access error if not first set to NULL
+				pp->iflines = (IFLINE*) NULL;
+				pp->scheduledTimeSlots = (int*) NULL;
+				pp->nTimeSlots = 0;
+			}
 			else {
 				fprintf(stderr,"Start time missing from %s\n",*fparse);
 				exit(1);
@@ -90,23 +102,22 @@ PROCESS *parseFiles(char *fname) {
 		usage();
 		exit(0);
 	} else {
-		files = malloc(BUFSIZ*sizeof(char*));
+		files = (char**) realloc(files,(nfiles+1)*sizeof(char*));
+		//files = malloc(BUFSIZ*sizeof(char*));
 		if (files == NULL) {
 			perror("Cannot allocate to files");
 			exit(0);
 		}
 		//Parsing all the filenames.
+		char* strCheck;
 		char line[BUFSIZ];
-		
-		while (INFILE(fp)) {
-			if (fgets(line,sizeof line,fp)== NULL) {
-				perror("Cannot process file");
-				exit(0);
-			}
+		while (INFILE(fp) && (strCheck = fgets(line,sizeof line,fp)) != NULL ) {
+			files = (char*) realloc(files,(nfiles+1)*sizeof(char*));
+			//TODO: what about an empty line?
 			trimLine(line);
 			files[nfiles] = malloc(sizeof line);
-			if (files == NULL) {
-				perror("Cannot allocate to files");
+			if (files[nfiles] == NULL) {
+				perror("Cannot allocate space for file name");
 				exit(0);
 			}
 			strcpy(files[nfiles],line);

@@ -72,8 +72,12 @@ int main(int argc, char *argv[]) {
   p = processes;
   if (lf) {
     fprintf(logger,"PROCESS ARRAY NOW SORTED\n");
-    for (int i = 0; i < nfiles; i++,p++) fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
-  }
+    for (int i = 0; i < nfiles; i++,p++) 
+		{
+			computeProcessRunTime(p);
+			fprintf(logger,"Process %d: Start time=%d and Running time=%d\n",i,p->stime, p->runningTime);
+		}
+  }		
   
   schedule(alg_flag,processes);
     

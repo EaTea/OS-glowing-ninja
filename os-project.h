@@ -99,3 +99,8 @@ extern void setupLogging();
  * Prints a new logging session to the log file.
  */
 extern void newLogSession();
+
+/*
+ * Computes the running time of a single PROCESS data structure
+ */
+extern void computeProcessRunTime(PROCESS*);
