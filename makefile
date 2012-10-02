@@ -14,4 +14,9 @@ $(PROJ)	: $(OBJ)
 	$(CC) $(CFLAGS) -c $<
 
 clean:	
+	echo "Removing all object files and the project executable in build directory"
 	rm -f $(BUILD_DIR)/$(PROJ) $(OBJ)
+
+cleanLog:
+	echo "Removing all log files in ./logs with extension .log"
+	rm -f logs/*.log

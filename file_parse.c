@@ -1,6 +1,6 @@
 #include "os-project.h"
 
-void trimline(char *line) {
+void trimLine(char *line) {
   while (*line) {
     if (*line == '\n' || *line == '\r') {
       *line = '\0';
@@ -11,7 +11,7 @@ void trimline(char *line) {
 }
 
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
-PROCESS *readfiles() {
+PROCESS *readFiles() {
  fprintf(logger,"%d files\n",nfiles);
  PROCESS *processes = malloc(nfiles*sizeof(PROCESS));
  if (files == NULL) {
@@ -35,46 +35,45 @@ PROCESS *readfiles() {
      char line[BUFSIZ];
      
      fgets(line,sizeof line,fp); //Read first line
-       trimline(line);
-       if (isint(line)) pp->stime = strtol(line,NULL,10);
-  
-    else {
-	 fprintf(stderr,"Start time missing from %s\n",*fparse);
-	 exit(0);
-       }
-     while (INFILE(fp)) { //Read rest of doc.
-       fgets(line,sizeof line,fp);
-       trimline(line);
-       //check for existence of ifline
-       if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
-	 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
-	 IFLINE il = pp->iflines[pp->nifs];
-	 char c;
-	 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.max),&c,&c,&(il.gotoline));
-	 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.max,il.gotoline);
-	 ++pp->nifs;
-       }
-       ++pp->nlines;
-     }
-   }
-   fprintf(logger,"Read file %s\n",*fparse);
-   fparse++;
-   pp++;
-  
+		 trimLine(line);
+		 if (isint(line)) pp->stime = strtol(line,NULL,10);
+
+		 else {
+			 fprintf(stderr,"Start time missing from %s\n",*fparse);
+			 //TODO: should this be exit(0)? or exit(1)?
+			 exit(0);
+		 }
+		 while (INFILE(fp)) { //Read rest of doc.
+			 fgets(line,sizeof line,fp);
+			 trimLine(line);
+			 //check for existence of ifline
+			 if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
+				 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
+				 IFLINE il = pp->iflines[pp->nifs];
+				 char c;
+				 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.max),&c,&c,&(il.gotoline));
+				 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.max,il.gotoline);
+				 ++pp->nifs;
+			 }
+			 ++pp->nlines;
+		 }
+	 }
+	 fprintf(logger,"Read file %s\n",*fparse);
+	 fparse++;
+	 pp++;
+		
  }
  fclose(fp);
  
  pp = processes;
  for (int i = 0; i < nfiles; i++,pp++) {
-   fprintf(logger,"Process %s has starttime %d and %d lines, with %d ifs\n",files[i],pp->stime,pp->nlines,pp->nifs);
+	 fprintf(logger,"Process %s has starttime %d and %d lines, with %d ifs\n",files[i],pp->stime,pp->nlines,pp->nifs);
  }
- 
- 
  return processes;
 }
 
 /** Parses the in.file to get the name of all the input files */
-PROCESS *parsefiles(char *fname) {
+PROCESS *parseFiles(char *fname) {
   //attempt to open file
   FILE *fp;
   if ((fp = fopen(fname,"r")) == NULL) {
@@ -93,7 +92,7 @@ PROCESS *parsefiles(char *fname) {
     char line[BUFSIZ];
     while (INFILE(fp)) {
       fgets(line,sizeof line,fp);
-      trimline(line);
+      trimLine(line);
       files[nfiles] = malloc(sizeof line);
       if (files == NULL) {
 	perror("Cannot allocate to files");
@@ -106,5 +105,5 @@ PROCESS *parsefiles(char *fname) {
   }
   fclose(fp);
   
-  return readfiles();
+  return readFiles();
 }

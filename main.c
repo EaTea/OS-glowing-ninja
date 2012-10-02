@@ -1,5 +1,23 @@
 #include "os-project.h"
 
+void fcfs(PROCESS *ps) {
+  
+}
+
+void rr(PROCESS *ps, int tq) {
+  
+}
+
+int schedule(int flag,PROCESS *ps) {
+  switch (flag) {
+    case FCFSALG: fcfs(ps); break;
+    case RRALG: rr(ps,time_quant); break;
+    default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(0); break;
+  }
+  
+  return 0;
+}
+
 int main(int argc, char *argv[]) {
   
   //Enable logging
@@ -41,8 +59,21 @@ int main(int argc, char *argv[]) {
   
   char *algorithm = alg_flag == RRALG ? "Round Robin" : "First Come First Served";
   if (lf) fprintf(logger,"Using Algorithm: %s\n",algorithm);
-  parsefiles(*argv);
+  PROCESS* processes = parseFiles(*argv);
   if (lf) fprintf(logger,"%d files successfully read\n",nfiles);
+  PROCESS* p = processes;
+  if (lf) 
+    for (int i = 0; i < nfiles; i++,p++) fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
+ 
+  qsort(processes,nfiles,sizeof(PROCESS),cmp_by_start_time);
+  p = processes;
+  if (lf) {
+    fprintf(logger,"PROCESS ARRAY NOW SORTED\n");
+    for (int i = 0; i < nfiles; i++,p++) fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
+  }		
+  
+  schedule(alg_flag,processes);
+    
   fclose(logger);
   return 0;
 }
