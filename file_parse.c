@@ -106,20 +106,22 @@ PROCESS *parseFiles(char *fname) {
 		usage();
 		exit(0);
 	} else {
-		files = malloc(BUFSIZ*sizeof(char*));
+		files = (char**) realloc(files,(nfiles+1)*sizeof(char*));
+		//files = malloc(BUFSIZ*sizeof(char*));
 		if (files == NULL) {
 			perror("Cannot allocate to files");
 			exit(0);
 		}
 		//Parsing all the filenames.
+		char* strCheck;
 		char line[BUFSIZ];
-		while (INFILE(fp)) {
-			fgets(line,sizeof line,fp);
+		while (INFILE(fp) && (strCheck = fgets(line,sizeof line,fp)) != NULL ) {
+			files = (char*) realloc(files,(nfiles+1)*sizeof(char*));
 			//TODO: what about an empty line?
 			trimLine(line);
 			files[nfiles] = malloc(sizeof line);
-			if (files == NULL) {
-				perror("Cannot allocate to files");
+			if (files[nfiles] == NULL) {
+				perror("Cannot allocate space for file name");
 				exit(0);
 			}
 			strcpy(files[nfiles],line);
