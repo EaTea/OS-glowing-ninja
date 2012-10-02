@@ -47,6 +47,9 @@ PROCESS *readFiles() {
 				pp->stime = strtol(line,NULL,10);
 				//construct a new process and initialise its default values
 				pp->nlines = pp->nifs = pp->runningTime = 0;
+				//apparently causes a memory access error if not first set to NULL
+				pp->iflines = (IFLINE*) NULL;
+				pp->scheduledTimeSlots = (int*) NULL;
 				pp->nTimeSlots = 0;
 			}
 			else {
