@@ -1,9 +1,9 @@
 #include "os-project.h"
 
 char *progname;
-int alg_flag;
+int alg_flag = 0;
 int time_quant = -1;
-char **files;
-int nfiles;
+char **files = NULL;
+int nfiles = 0;
 int lf;
-FILE *logger;
+FILE *logger = NULL;
