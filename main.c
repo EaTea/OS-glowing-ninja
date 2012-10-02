@@ -1,5 +1,4 @@
-#include "scheduler.h"
-//#include "queue.h"
+#include "os-project.h"
 
 void fcfs(PROCESS *ps) {
   int time = 0;

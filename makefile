@@ -1,10 +1,10 @@
-PROJ	= scheduler
+PROJ	= os-project
 BUILD_DIR = build
 HEADER	= $(PROJ).h
 CC	= gcc -std=c99
 CFLAGS 	= -Wall -pedantic -g -O2
 
-SOURCES= scheduler.c fileparse.c globals.c auxfns.c logger.c fcfs.c
+SOURCES= main.c file_parse.c globals.c aux_fcns.c logger.c fcfs.c
 OBJ= $(SOURCES:%.c=%.o)
 
 $(PROJ)	: $(OBJ)
