@@ -51,8 +51,8 @@ PROCESS *readFiles() {
 				 fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
 				 IFLINE il = pp->iflines[pp->nifs];
 				 char c;
-				 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.max),&c,&c,&(il.gotoline));
-				 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.max,il.gotoline);
+				 sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il.ifvar),&(il.loopLimit),&c,&c,&(il.gotoline));
+				 fprintf(logger,"if %c < %d goto %d\n",il.ifvar,il.loopLimit,il.gotoline);
 				 ++pp->nifs;
 			 }
 			 ++pp->nlines;

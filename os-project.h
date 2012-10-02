@@ -10,17 +10,29 @@
 
 typedef struct {
     char ifvar; //The character for the variable
+		//line to go to
     int gotoline;
+		//line to go from?
+		int originline;
+		//looped
     int looped;
-    int max;
+		//k --- the value ifvar must be less than for the if loop to continue
+    int loopLimit;
 } IFLINE;
 
 typedef struct {
+	//TODO: is curline necessary?
   int curline;
+	//start time
   int stime;
+	//number of lines
   int nlines;
+	//number of ifs
   int nifs;
+	//length of time process requires to run
 	int runningTime;
+	//each IFLINE
+	//TODO: should be dynamically allocated?
   IFLINE iflines[BUFSIZ];
 	//number of time slots allocated for a process
 	int nTimeSlots;

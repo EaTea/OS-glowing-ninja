@@ -31,3 +31,17 @@ int min(int a, int b)
 {
 	return a < b ? a : b;
 }
+
+void computeProcessRunTime(PROCESS* p)
+{
+	int runTime = 0;
+	int nLines = p->nlines;
+	int nIfs = p->nifs;
+	runTime += nLines;
+	for(int ifCount = 0; ifCount < nIfs; ifCount++)
+	{
+		IFLINE* ifIterator = p->iflines+ifCount;
+		runTime += ifIterator->loopLimit * (ifIterator->originline - ifIterator->gotoline + 1);
+	}
+	p->runningTime = runTime;
+}
