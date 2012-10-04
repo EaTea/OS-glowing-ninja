@@ -12,7 +12,7 @@ typedef struct {
 	//The character for the variable
 	char ifvar;
 	//line to go to
-  int gotoline;
+	int gotoline;
 	//line to go from?
 	int originline;
 	//looped
@@ -23,15 +23,17 @@ typedef struct {
 
 typedef struct {
 	//start time
-  int stime;
+	int stime;
 	//number of lines
-  int nlines;
+	int nlines;
 	//number of ifs
-  int nifs;
+	int nifs;
 	//length of time process requires to run
 	int runningTime;
+	//The current time of the running process (number of cycles stepped)
+	int currtime;
 	//each IFLINE
-  IFLINE* iflines;
+	IFLINE* iflines;
 	//number of time slots allocated for a process
 	int nTimeSlots;
 	//each of the time slots scheduled for serving a process
@@ -53,6 +55,8 @@ extern void usage();
  * Returns a nonzero value otherwise.
  */
 extern int isint(char*);
+
+extern void fcfs_algorithm(PROCESS*);
 
 /*
  * Comparator to determine if process a starts earlier than process b.

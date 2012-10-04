@@ -1,20 +1,20 @@
 #include "os-project.h"
 
-void fcfs(PROCESS *ps) {
-//  int time = 0;
-}
-
-void rr(PROCESS *ps, int tq) {
-  
-}
-
 int schedule(int flag,PROCESS *ps) {
   switch (flag) {
-    case FCFSALG: fcfs(ps); break;
-    case RRALG: rr(ps,time_quant); break;
+    case FCFSALG: fcfs_algorithm(ps); break;
+    case RRALG: /*rr(ps,time_quant)*/printf("We haven't implemented this shit yet, foo\n"); break;
     default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(0); break;
   }
   
+  fprintf(logger,"Scheduling complete. Result of Schedule:\n");
+  //TODO: Move to print_schedule fn in auxfns.c
+  for (int i = 0; i < nfiles; i++) {
+	printf("Process %d: ",i);
+	for (int j = 0; j < ps[i].nTimeSlots; j++) {
+		printf("%d\t",ps[i].scheduledTimeSlots[j]);
+	} printf("\n");
+  }
   return 0;
 }
 
@@ -67,17 +67,6 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < nfiles; i++,p++)
       fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
   }
- 
-  qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime);
-  p = processes;
-  if (lf) {
-    fprintf(logger,"PROCESS ARRAY NOW SORTED\n");
-    for (int i = 0; i < nfiles; i++,p++) 
-		{
-			computeProcessRunTime(p);
-			fprintf(logger,"Process %d: Start time=%d and Running time=%d\n",i,p->stime, p->runningTime);
-		}
-  }		
   
   schedule(alg_flag,processes);
     

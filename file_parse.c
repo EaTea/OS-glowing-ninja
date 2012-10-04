@@ -61,30 +61,34 @@ PROCESS *readFiles() {
 				}
 			
 				while (INFILE(fp)) { //Read rest of doc.
-					fgets(line,sizeof line,fp);
-					trimLine(line);
-					++(pp->nlines);
-					//check for existence of ifline
-					if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
-						//found a new IFLINE
-						fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
-						//increase number of iflines recorded
-						++(pp->nifs);
-						//increase size of IFLINE array by 1
-						pp->iflines = (IFLINE*) realloc(pp->iflines, (pp->nifs)*sizeof(IFLINE));
-						IFLINE* il = pp->iflines + (pp->nifs - 1);
-						//the line that this ifline is on
-						il->originline = pp->nlines;
-						il->looped = 0;
-						//sentinel character
-						char c;
-						//read using sscanf
-						sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il->ifvar),&(il->loopLimit),&c,&c,&(il->gotoline));
-						fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
-					}
+					if (fgets(line,sizeof line,fp) != NULL) {
+						trimLine(line);
+						++(pp->nlines);
+						//check for existence of ifline
+						if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
+							//found a new IFLINE
+							fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
+							//increase number of iflines recorded
+							++(pp->nifs);
+							//increase size of IFLINE array by 1
+							pp->iflines = (IFLINE*) realloc(pp->iflines, (pp->nifs)*sizeof(IFLINE));
+							IFLINE* il = pp->iflines + (pp->nifs - 1);
+							//the line that this ifline is on
+							il->originline = pp->nlines;
+							il->looped = 0;
+							//sentinel character
+							char c;
+							//read using sscanf
+							sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il->ifvar),&(il->loopLimit),&c,&c,&(il->gotoline));
+							//TODO: If string is poorly formatted, might require regex instead of sscanf.
+							fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
+						}
+					}	
 				}
 			}
-		
+			pp->runningTime = pp->nlines;
+			//TODO: Compute ACTUAL running time - This does not account for ifs yet.
+			//findRunningTime(fp)
 			if (lf) fprintf(logger,"Read file %s\n",*fparse);
 			fparse++;
 			pp++;
@@ -120,7 +124,7 @@ PROCESS *parseFiles(char *fname) {
 		char* strCheck;
 		char line[BUFSIZ];
 		while (INFILE(fp) && (strCheck = fgets(line,sizeof line,fp)) != NULL ) {
-			files = (char*) realloc(files,(nfiles+1)*sizeof(char*));
+			files = realloc(files,(nfiles+1)*sizeof(char*)); //Yes, C99 prefers you use void pointers.
 			//TODO: what about an empty line?
 			trimLine(line);
 			files[nfiles] = malloc(sizeof line);
