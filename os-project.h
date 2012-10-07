@@ -58,6 +58,8 @@ extern int isint(char*);
 
 extern void fcfs_algorithm(PROCESS*);
 
+extern void rr_algorithm(PROCESS*,int);
+
 /*
  * Comparator to determine if process a starts earlier than process b.
  * This comparator sorts by start time, and returns
