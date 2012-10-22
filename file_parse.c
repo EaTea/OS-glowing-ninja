@@ -9,6 +9,23 @@ void trimLine(char *line) {
 		line++;
 	}
 }
+/*
+int findRunningTime(FILE *fp) {
+	//TODO: Use this function if we need to actually parse the FILE. Otherwise
+	//		use the overloaded version
+	return 0;
+}*/
+
+int findRunningTime(PROCESS *p) {
+	int rtime = p->nlines;
+	fprintf(logger,"nifs = %d",p->nifs);
+	for (int i = 0; i < p->nifs; i++) {
+		IFLINE x = p->iflines[i];
+		fprintf(logger,"Looking at ifline %d\nGo from %d to %d a total of %d times\n",i,x.originline,x.gotoline,x.loopLimit);
+		rtime += (x.originline-x.gotoline+1)*x.loopLimit;
+	}
+	return rtime;
+}
 
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
 PROCESS *readFiles() {
@@ -88,10 +105,8 @@ PROCESS *readFiles() {
 					}	
 				}
 			}
-			pp->runningTime = pp->nlines;
 			pp->currtime = 0;
-			//TODO: Compute ACTUAL running time - This does not account for ifs yet.
-// 			findRunningTime(fp)
+			pp->runningTime = findRunningTime(pp);
 			if (lf) fprintf(logger,"Read file %s\n",*fparse);
 			fparse++;
 			pp++;
