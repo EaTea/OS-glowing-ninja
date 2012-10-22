@@ -87,8 +87,9 @@ PROCESS *readFiles() {
 				}
 			}
 			pp->runningTime = pp->nlines;
+			pp->currtime = 0;
 			//TODO: Compute ACTUAL running time - This does not account for ifs yet.
-			//findRunningTime(fp)
+// 			findRunningTime(fp)
 			if (lf) fprintf(logger,"Read file %s\n",*fparse);
 			fparse++;
 			pp++;
@@ -99,7 +100,7 @@ PROCESS *readFiles() {
 	pp = processes;
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
-			fprintf(logger,"Process %s has starttime %d and %d lines, with %d ifs\n",files[i],pp->stime,pp->nlines,pp->nifs);
+			fprintf(logger,"Process %s has starttime %d and running time %d, with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
 	return processes;
 }
 

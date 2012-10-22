@@ -3,7 +3,7 @@
 int schedule(int flag,PROCESS *ps) {
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
-    case RRALG: /*rr(ps,time_quant)*/printf("We haven't implemented this shit yet, foo\n"); break;
+    case RRALG: rr_algorithm(ps,time_quant); break;
     default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(0); break;
   }
   
@@ -67,6 +67,14 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < nfiles; i++,p++)
       fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
   }
+  
+  //Order by start time and number.
+  qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime); 
+  p = processes;
+  for (int i = 0; i < nfiles; i++,p++)
+    p->num = i+1;
+  
+  
   
   schedule(alg_flag,processes);
     

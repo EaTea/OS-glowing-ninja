@@ -22,6 +22,8 @@ typedef struct {
 } IFLINE;
 
 typedef struct {
+	//number (in sorted order)
+	int num;
 	//start time
 	int stime;
 	//number of lines
