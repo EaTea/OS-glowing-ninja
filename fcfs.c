@@ -6,9 +6,6 @@
 /***/
 void fcfs_algorithm(PROCESS* processes)
 {
-	//TODO: See if Queue is necessary for FCFS - Probably isn't.
-	//We can implement this all in one hit as qsort guarantees that a process will start
-	//at its earliest possible time, and in order of Start Time.
 	qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime);
 	if (lf) fprintf(logger,"Processes sorted\n");
 	int currentTime = 0;
@@ -25,7 +22,7 @@ void fcfs_algorithm(PROCESS* processes)
 		currentTime += pp->runningTime;
 	}
 	
-	
+	printf("Scheduling finish time: %d\n",currentTime);
 // 	for(int pId = 0; pId < nProcesses; pId++)
 // 	{
 // 		currentTime = max(processes[pId].stime, currentTime);

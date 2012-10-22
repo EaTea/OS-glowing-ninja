@@ -22,6 +22,7 @@ typedef struct {
 } IFLINE;
 
 typedef struct {
+	char *pname;
 	//number (in sorted order)
 	int num;
 	//start time

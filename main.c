@@ -10,7 +10,7 @@ int schedule(int flag,PROCESS *ps) {
   fprintf(logger,"Scheduling complete. Result of Schedule:\n");
   //TODO: Move to print_schedule fn in auxfns.c
   for (int i = 0; i < nfiles; i++) {
-	printf("Process %d: ",i);
+	printf("%s:\t",ps[i].pname);
 	for (int j = 0; j < ps[i].nTimeSlots; j++) {
 		printf("%d\t",ps[i].scheduledTimeSlots[j]);
 	} printf("\n");
