@@ -4,7 +4,7 @@ HEADER	= $(PROJ).h queue.h
 CC	= gcc -std=c99
 CFLAGS 	= -Wall -pedantic -g -O2
 
-SOURCES = file_parse.c globals.c aux_fcns.c logger.c queue.c fcfs.c rr.c main.c 
+SOURCES = file_parse.c globals.c aux_fcns.c logger.c fcfs.c rr.c queue.c main.c 
 OBJ= $(SOURCES:%.c=%.o)
 
 $(PROJ)	: $(OBJ)
@@ -21,6 +21,7 @@ qtest: queue.c queue.h qtest.c
 clean:	
 	echo "Removing all object files and the project executable in build directory"
 	rm -f $(BUILD_DIR)/$(PROJ) $(BUILD_DIR)/qtest $(OBJ)
+	rm -f *.*~
 
 cleanLog:
 	echo "Removing all log files in ./logs with extension .log"

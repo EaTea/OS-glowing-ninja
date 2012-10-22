@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "os-project.h"
 
 QUEUE new_queue(int n) {
   QUEUE *q = malloc(sizeof(QUEUE));

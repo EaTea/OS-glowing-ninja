@@ -8,7 +8,7 @@ for i in *.jobs
 	then
 		echo "RR: Round Robin Scheduling Algorithm"
 	fi
-	for k in $@
+		for k in $@
 		do
 		echo "Time Quantum: $k"
 		../build/os-project RR $k $i
