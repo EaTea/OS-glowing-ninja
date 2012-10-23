@@ -34,6 +34,7 @@ void rr_algorithm(PROCESS* processes, int tq)
 		}
 		if (is_empty(q)) {
 			currentTime = pp->stime;
+			continue;
 		}
 		
 		
