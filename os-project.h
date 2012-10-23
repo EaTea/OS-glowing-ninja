@@ -15,7 +15,7 @@ typedef struct {
 	int gotoline;
 	//line to go from?
 	int originline;
-	//looped
+	//number of times looped
 	int looped;
 	//k --- the value ifvar must be less than for the if loop to continue
 	int loopLimit;
@@ -113,6 +113,26 @@ extern void newLogSession();
  * Computes the running time of a single PROCESS data structure
  */
 extern void computeProcessRunTime(PROCESS*);
+
+/*
+ * Processes a single line of a process
+ * Accepts the IFLINEs for that process and the line count that it is up to at the moment, and the number of if lines
+ * Returns the amount of time consumed to process that line
+ */
+extern int processLine(IFLINE*, int, int);
+
+/*
+ * Checks if a line is inside the cache
+ * Accepts the line number (indexed from 1)
+ * Returns a nonzero value iff the line number passed has been loaded into the cache
+ */
+extern int inCache(int);
+/*
+ * Checks if a line is inside the main memory 
+ * Accepts the line number (indexed from 1)
+ * Returns a nonzero value iff the line number passed has been loaded into the main memory
+ */
+extern int inMainMemory(int);
 
 
 
