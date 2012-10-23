@@ -15,13 +15,13 @@ static int IFLINESearch(IFLINE* iflines, int currentLine, int nIfs)
 	return -1;
 }
 
-int processLine(IFLINE* iflines, int* currentLine, int nIfs)
+int processLine(IFLINE* iflines, int* currentLine, int nIfs, int timeRemaining)
 {
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
 	int retVal;
 	if(inMainMemory(*currentLine))
 	{
-		if(inCache(*currentLine))
+		if(inCache(*currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
 		{
 			//treat this like a normal line
 			//relies on lazy evaluation
@@ -34,7 +34,7 @@ int processLine(IFLINE* iflines, int* currentLine, int nIfs)
 			//in this case time step is value 1
 			retVal = 1;
 		}
-		else
+		else if(timeRemaining == -1 || timeRemaining >= 2)
 		{
 			//current line not inside the cache; load into cache
 			//TODO: Implement this function
@@ -52,6 +52,10 @@ int processLine(IFLINE* iflines, int* currentLine, int nIfs)
 			//(time cost of 1 to load and time cost of 1 to execute)
 			retVal = 2;
 		}
+		else
+		{
+			return 0;
+		}
 	}
 	else
 	{
@@ -59,4 +63,40 @@ int processLine(IFLINE* iflines, int* currentLine, int nIfs)
 		retVal = -1;
 	}
 	return retVal;
+}
+
+int runProcessInTimeSlice(PROCESS* p, int timeslice)
+{
+	int overallTime = 0;
+	//run process until completion
+	if(timeslice == -1)
+	{
+		while(p->currentLine <= p->nlines)
+		{
+			//keep on running a process until it's finished
+			int timeConsumed = processLine(p->iflines, &(p->currentLine), p->nifs, timeslice);
+			if(timeConsumed < 0)
+			{
+				//page fault
+				break;
+			}
+			overallTime += timeConsumed;
+		}
+	}
+	else
+	{
+		while(overallTime < timeslice && p->currentLine <= p->nlines)
+		{
+			int timeConsumed = processLine(p->iflines, &(p->currentLine), p->nifs, timeslice-overallTime);
+			if(timeConsumed < 1)
+			{
+				//in this case, the processLine function has returned 0
+				//OR
+				//page fault
+				break;
+			}
+			overallTime += timeConsumed;
+		}
+	}
+	return overallTime;
 }
