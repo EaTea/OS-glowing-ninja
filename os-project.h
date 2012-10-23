@@ -112,16 +112,27 @@ extern void setupLogging();
 extern void newLogSession();
 
 /*
+ * TODO: I believe this will end up becoming deprecated.
  * Computes the running time of a single PROCESS data structure
  */
 extern void computeProcessRunTime(PROCESS*);
 
 /*
  * Processes a single line of a process
- * Accepts the IFLINEs for that process and the line count that it is up to at the moment, and the number of if lines
+ * Accepts the IFLINEs for that process and the line count that it is up to at the moment, and the number of if lines, and the amount of time remaining
+ * If this amount is less than 0, there is no limit; otherwise, the time consumed is always less than the time remaining
  * Returns the amount of time consumed to process that line
  */
-extern int processLine(IFLINE*, int*, int);
+extern int processLine(IFLINE*, int*, int, int);
+
+/*
+ * Run a process with a given timeslice
+ * Accepts the PROCESS to be run and the maximum amount of time that this program should run for.
+ * If the integer parameter is -1, then the PROCESS will run until completion.
+ * This function will modify the underlying process and add the time it has consumed into the slot for this process
+ * Returns the amount of time consumed in running that process.
+ */
+extern int runProcessInTimeSlice(PROCESS*, int);
 
 /*
  * Checks if a line is inside the cache
