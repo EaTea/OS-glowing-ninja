@@ -1,4 +1,4 @@
-#include "os-project.c"
+#include "os-project.h"
 
 int inCache(int lineNumber)
 {
