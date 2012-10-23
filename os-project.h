@@ -119,7 +119,7 @@ extern void computeProcessRunTime(PROCESS*);
  * Accepts the IFLINEs for that process and the line count that it is up to at the moment, and the number of if lines
  * Returns the amount of time consumed to process that line
  */
-extern int processLine(IFLINE*, int, int);
+extern int processLine(IFLINE*, int*, int);
 
 /*
  * Checks if a line is inside the cache
