@@ -23,6 +23,8 @@ typedef struct {
 
 typedef struct {
 	char *pname;
+	//current line
+	int curLine;
 	//number (in sorted order)
 	int num;
 	//start time
