@@ -98,6 +98,7 @@ extern int alg_flag;
 extern int time_quant;
 extern int nfiles;
 extern int timeSoFar;
+extern int memoryManage;
 
 extern FILE *logger;
 extern int lf;
