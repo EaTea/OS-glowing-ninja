@@ -65,6 +65,11 @@ extern int isint(char*);
 
 extern void fcfs_algorithm(PROCESS*);
 
+/*
+ * Simulates a Round-Robin scheduling on an array of PROCESSes.
+ * Accepts a array of PROCESSes that has been sorted by starting time and an integer time quantum.
+ * N.B.: as the time quantum approaches 0, interesting behaviour can occur.
+ */
 extern void rr_algorithm(PROCESS*,int);
 
 /*
