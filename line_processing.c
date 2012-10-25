@@ -107,8 +107,8 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	//TODO: Add in that scheduled time slots is updated
 	//TODO: Verify this worked
 	(p->nTimeSlots)++;
-	p->scheduledTimeSlots = realloc(p->scheduledTimeSlots, p->nTimeSlots);
-	p->durationTimeSlots = realloc(p->durationTimeSlots, p->nTimeSlots);
+	p->scheduledTimeSlots = (int*)realloc(p->scheduledTimeSlots, p->nTimeSlots * sizeof(int));
+	p->durationTimeSlots = (int*)realloc(p->durationTimeSlots, p->nTimeSlots * sizeof(int));
 	p->scheduledTimeSlots[p->nTimeSlots-1] = timeSoFar;
 	p->durationTimeSlots[p->nTimeSlots-1] = overallTime;
 	return overallTime;
