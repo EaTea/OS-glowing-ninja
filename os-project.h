@@ -140,16 +140,16 @@ extern int runProcessInTimeSlice(PROCESS*, int);
 
 /*
  * Checks if a line is inside the cache
- * Accepts the line number (indexed from 1)
+ * Accepts the PROCESS memory location and line number (indexed from 1)
  * Returns a nonzero value iff the line number passed has been loaded into the cache
  */
-extern int inCache(int);
+extern int inCache(PROCESS*, int);
 /*
  * Checks if a line is inside the main memory 
- * Accepts the line number (indexed from 1)
+ * Accepts the PROCESS location inside memory and line number (indexed from 1)
  * Returns a nonzero value iff the line number passed has been loaded into the main memory
  */
-extern int inMainMemory(int);
+extern int inMainMemory(PROCESS*, int);
 
 
 

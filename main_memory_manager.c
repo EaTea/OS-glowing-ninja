@@ -1,6 +1,6 @@
 #include "os-project.h"
 
-int inMainMemory(int currentLine)
+int inMainMemory(PROCESS* p, int currentLine)
 {
 	return 1;
 }
