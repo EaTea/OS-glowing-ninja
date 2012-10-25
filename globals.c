@@ -8,6 +8,7 @@ int nfiles = 0;
 int lf;
 FILE *logger = NULL;
 int timeSoFar = 0;
+int memoryManage;
 
 //cache constants
 int cacheStart = -4;
