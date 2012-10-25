@@ -1,4 +1,13 @@
 #include "os-project.h"
+#include <regex.h>
+
+//Nic's awesome regular expression - We deserve bonus marks for this
+//Matches "if i < 3 i = i+1 goto 4" with arbitrary whitespace -- Can
+//Also be case-insensitive depending on how regcomp calls it.
+const char *PATTERN =
+"^[[:space:]]*if[[:space:]]\\+\\([[:alpha:]]\\)[[:space:]]*<[[:space:]]*\\"\
+"(\[[:digit:]]\\+\\)[[:space:]]\\+\\1[[:space:]]*=[[:space:]]*\\1[[:space:]]*"\
+"+[[:space:]]*1[[:space:]]\\+goto[[:space:]]\\+\\([[:digit:]]\\+\\)[[:space:]]*$";
 
 void trimLine(char *line) {
 	while (*line) {
@@ -9,11 +18,65 @@ void trimLine(char *line) {
 		line++;
 	}
 }
+
+int findIfLine(PROCESS *p, char *line, int ln) {
+	regex_t regex;
+	int reti;
+	
+	char msgbuf[100];
+	int nmatches = 4;
+	regmatch_t m[1024];
+	
+	/* Compile regular expression */
+	reti = regcomp(&regex, PATTERN, REG_ICASE);
+	if(reti){
+		fprintf(stderr, "Could not compile regex\n"); 
+		exit(1); 
+	}
+	/* Execute regular expression */
+	reti = regexec(&regex, line, nmatches, m, 0);
+	if(!reti) {
+		//Found an ifline!
+		++(p->nifs);
+		p->iflines = (IFLINE*) realloc(p->iflines, (p->nifs)*sizeof(IFLINE));
+		IFLINE* il = p->iflines + (p->nifs - 1);
+		il->looped = 0;
+		il->originline = ln;
+		
+		//loop variable
+		il->ifvar = tolower(line[(int)m[1].rm_so]);
+		
+		char numbs[10], numbs2[10];
+		
+		//loop Limit variable
+		int s = (int)m[2].rm_so, e = (int)m[2].rm_eo;
+		strncpy(numbs,line+s,e-s);
+		il->loopLimit = strtol(numbs,NULL,10);
+		
+		//goto Line
+		s = (int)m[3].rm_so;
+		e = (int)m[3].rm_eo;
+		strncpy(numbs2,line+s,e-s);
+		il->gotoline = strtol(numbs2,NULL,10);
+		regfree(&regex);	
+		return 1;
+	} else if( reti == REG_NOMATCH ) {
+		return 0;
+	} else {
+		//Aww balls. Somethign went horrid.
+		regerror(reti, &regex, msgbuf, sizeof(msgbuf));
+		fprintf(stderr, "Regex match failed: %s\n", msgbuf);
+		exit(1);
+	}
+
+/* Free compiled regular expression if you want to use the regex_t again */
+	return -1;
+}
 /*
 int findRunningTime(FILE *fp) {
 	//TODO: Use this function if we need to actually parse the FILE. Otherwise
 	//		use the overloaded version
-	return 0;
+	return 0;	
 }*/
 
 int findRunningTime(PROCESS *p) {
@@ -59,7 +122,7 @@ PROCESS *readFiles() {
 			if (fgets(line,sizeof line,fp) == NULL) {//Read first line
 				perror("Cannot process file");
 				exit(0);
-			} else {
+				} else {
 				trimLine(line);
 				if (isint(line)) {
 					pp->pname = malloc(strlen(*fparse)+1);
@@ -84,22 +147,8 @@ PROCESS *readFiles() {
 						trimLine(line);
 						++(pp->nlines);
 						//check for existence of ifline
-						if (tolower(line[0]) == 'i' && tolower(line[1]) == 'f') {
-							//found a new IFLINE
-							fprintf(logger,"IF LINE FOUND IN %s, line %d: \n\"%s\"\n",*fparse,pp->nlines+2,line);
-							//increase number of iflines recorded
-							++(pp->nifs);
-							//increase size of IFLINE array by 1
-							pp->iflines = (IFLINE*) realloc(pp->iflines, (pp->nifs)*sizeof(IFLINE));
-							IFLINE* il = pp->iflines + (pp->nifs - 1);
-							//the line that this ifline is on
-							il->originline = pp->nlines;
-							il->looped = 0;
-							//sentinel character
-							char c;
-							//read using sscanf
-							sscanf(line,"if %c < %d %c = %c+1 goto %d",&(il->ifvar),&(il->loopLimit),&c,&c,&(il->gotoline));
-							//TODO: If string is poorly formatted, might require regex instead of sscanf.
+						if (findIfLine(pp,line,pp->nlines)) {
+							IFLINE *il = pp->iflines;
 							fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
 						}
 					}	

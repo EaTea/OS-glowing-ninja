@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
+#include "../os-project.h"
 
 //Nic's awesome regular expression - We deserve bonus marks for this
 //Matches "if i < 3 i = i+1 goto 4" with arbitrary whitespace -- Can
@@ -13,31 +14,44 @@ const char *PATTERN =
 int main() {
 	regex_t regex;
 	int reti;
-	
+	char *line = "if i < 10 i=i+1 goto 4";
+	puts (line);
 	char msgbuf[100];
 	int nmatches = 1024;
 	regmatch_t m[1024];
-	char *line = "if  I < 5 i=i+1 goto 100";
-/* Compile regular expression */
+	/* Compile regular expression */
 	reti = regcomp(&regex, PATTERN, REG_ICASE);
-	if( reti ){ fprintf(stderr, "Could not compile regex\n"); exit(1); }
-
-/* Execute regular expression */
+	if(reti){
+		fprintf(stderr, "Could not compile regex\n"); 
+		exit(1); 
+	}
+	/* Execute regular expression */
 	reti = regexec(&regex, line, nmatches, m, 0);
-	if( !reti ){
-		puts("MATCHO");
-		//Ifline found
+	if(!reti){
+		//Found an ifline!
+		++(p->nifs);
+		p->iflines = (IFLINE*) realloc(p->iflines, (p->nifs)*sizeof(IFLINE));
+		IFLINE* il = p->iflines + (p->nifs - 1);
+// 		IFLINE *il = malloc(sizeof(IFLINE));
+		
+		//loop variable
+		il->ifvar = tolower(line[(int)m[1].rm_so]);
+		
+		char numbs[10], numbs2[10];
+		
+		//loop Limit variable
 		int s = (int)m[2].rm_so, e = (int)m[2].rm_eo;
-		printf("%d %d\n",s,e);
-		for (int i = s; i <= e; i++) {
-			printf("%c",line[i]);
-		} printf("\n");
-	}
-	else if( reti == REG_NOMATCH ){
+		strncpy(numbs,line+s,e-s);
+		il->loopLimit = strtol(numbs,NULL,10);
+		
+		//goto Line
+		s = (int)m[3].rm_so;
+		e = (int)m[3].rm_eo;
+		strncpy(numbs2,line+s,e-s);
+		il->gotoline = strtol(numbs2,NULL,10);
+	} else if( reti == REG_NOMATCH ) {
 		//Not an ifline -- Normal!
-		puts("NOMATCHO");
-	}
-	else{
+	} else {
 		//Aww balls. Somethign went horrid.
 		regerror(reti, &regex, msgbuf, sizeof(msgbuf));
 		fprintf(stderr, "Regex match failed: %s\n", msgbuf);
