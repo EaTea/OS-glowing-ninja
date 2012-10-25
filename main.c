@@ -12,8 +12,7 @@ int schedule(int flag,PROCESS *ps) {
   for (int i = 0; i < nfiles; i++) {
 	printf("%s:\t",ps[i].pname);
 	for (int j = 0; j < ps[i].nTimeSlots; j++) {
-		printf("%d\t",ps[i].scheduledTimeSlots[j]);
-		printf("%d\t",ps[i].durationTimeSlots[j]);
+		printf("(%d, %d)\t",ps[i].scheduledTimeSlots[j], ps[i].durationTimeSlots[j]);
 	} printf("\n");
   }
   return 0;
