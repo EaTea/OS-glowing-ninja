@@ -6,7 +6,7 @@
 //Also be case-insensitive depending on how regcomp calls it.
 const char *PATTERN =
 "^[[:space:]]*if[[:space:]]\\+\\([[:alpha:]]\\)[[:space:]]*<[[:space:]]*\\"\
-"(\[[:digit:]]\\+\\)[[:space:]]\\+\\1[[:space:]]*=[[:space:]]*\\1[[:space:]]*"\
+"([[:digit:]]\\+\\)[[:space:]]\\+\\1[[:space:]]*=[[:space:]]*\\1[[:space:]]*"\
 "+[[:space:]]*1[[:space:]]\\+goto[[:space:]]\\+\\([[:digit:]]\\+\\)[[:space:]]*$";
 
 void trimLine(char *line) {
@@ -58,6 +58,7 @@ int findIfLine(PROCESS *p, char *line, int ln) {
 		e = (int)m[3].rm_eo;
 		strncpy(numbs2,line+s,e-s);
 		il->gotoline = strtol(numbs2,NULL,10);
+		fprintf(logger,"looplimit = %d, gotoline = %d\n",il->loopLimit,il->gotoline);
 		regfree(&regex);	
 		return 1;
 	} else if( reti == REG_NOMATCH ) {
