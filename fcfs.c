@@ -11,26 +11,14 @@ void fcfs_algorithm(PROCESS* processes)
 	int currentTime = 0;
 	//QUEUE q = new_queue(nProcesses);
 	PROCESS *pp = processes;
-	printf("nfiles = %d",nfiles);
+	printf("nfiles = %d\n",nfiles);
 	for (int i = 0; i < nfiles; i++,pp++) { //Work through elements.
 		if (pp->stime > currentTime) currentTime = pp->stime; //Increment time as nothing can run.
 
 		printf("Starting process %d, at time %d\n",i,currentTime);
-		pp->nTimeSlots = 1;
-		pp->scheduledTimeSlots = malloc(sizeof(int));
-		(pp->scheduledTimeSlots)[0] = currentTime;
-		currentTime += pp->runningTime;
+		//run this process to completion
+		timeSoFar += runProcessInTimeSlice(pp, -1);
 	}
 	
 	printf("Scheduling finish time: %d\n",currentTime);
-// 	for(int pId = 0; pId < nProcesses; pId++)
-// 	{
-// 		currentTime = max(processes[pId].stime, currentTime);
-// 		processes[pId].nTimeSlots = 2;
-// 		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,processes[pId].nTimeSlots * sizeof(int));
-// 		processes[pId].scheduledTimeSlots[0] = currentTime;
-// 		//TODO: make the function commented out below
-// 		//runProcess(processes[pId], 0);
-// 		processes[pId].scheduledTimeSlots[1] = currentTime + processes[pId].runningTime;
-// 	}
 }	
