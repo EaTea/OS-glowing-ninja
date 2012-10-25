@@ -43,6 +43,8 @@ typedef struct {
 	int nTimeSlots;
 	//each of the time slots scheduled for serving a process
 	int* scheduledTimeSlots;
+	//duration of each time slot
+	int* durationTimeSlots;
 } PROCESS;
 
 extern char *progname;
