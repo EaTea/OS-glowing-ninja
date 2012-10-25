@@ -13,6 +13,7 @@ int schedule(int flag,PROCESS *ps) {
 	printf("%s:\t",ps[i].pname);
 	for (int j = 0; j < ps[i].nTimeSlots; j++) {
 		printf("%d\t",ps[i].scheduledTimeSlots[j]);
+		printf("%d\t",ps[i].durationTimeSlots[j]);
 	} printf("\n");
   }
   return 0;
