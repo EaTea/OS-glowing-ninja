@@ -103,7 +103,7 @@ extern FILE *logger;
 extern int lf;
 
 extern int cacheStart;
-extern char* cacheProcessName;
+extern char cacheProcessName[BUFSIZ];
 
 /*
  * Opens the logging stream and sets the log flag, otherwise prints an error.
