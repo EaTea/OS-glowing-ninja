@@ -7,3 +7,6 @@ char **files = NULL;
 int nfiles = 0;
 int lf;
 FILE *logger = NULL;
+//cache constants
+int cacheStart = -4;
+char* cacheProcessName = NULL;

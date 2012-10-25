@@ -95,9 +95,13 @@ extern PROCESS * parseFiles(char*);
 extern int alg_flag;
 extern int time_quant;
 extern int nfiles;
+extern int timeSoFar;
 
 extern FILE *logger;
 extern int lf;
+
+extern int cacheStart;
+extern char* cacheProcessName;
 
 /*
  * Opens the logging stream and sets the log flag, otherwise prints an error.
