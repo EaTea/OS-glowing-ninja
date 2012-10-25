@@ -15,52 +15,45 @@ static int IFLINESearch(IFLINE* iflines, int currentLine, int nIfs)
 	return -1;
 }
 
-int processLine(IFLINE* iflines, int* currentLine, int nIfs, int timeRemaining)
+int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 {
+	IFLINE* iflines = p->iflines;
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
 	int retVal;
-	if(inMainMemory(*currentLine))
+	if(inCache(p, *currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
 	{
-		if(inCache(*currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
-		{
-			//treat this like a normal line
-			//relies on lazy evaluation
-			if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
-				(*currentLine)++;
-			else
-				*currentLine = iflines[iflineIndex].gotoline;
-
-			//return the time taken to execute this step
-			//in this case time step is value 1
-			retVal = 1;
-		}
-		else if(timeRemaining == -1 || timeRemaining >= 2)
-		{
-			//current line not inside the cache; load into cache
-			//TODO: Implement this function
-			//loadIntoCache(*currentLine);
-			
-			//treat this like a normal line
-			//relies on lazy evaluation
-			if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
-				(*currentLine)++;
-			else
-				*currentLine = iflines[iflineIndex].gotoline;
-
-			//return the time taken to execute this step
-			//in this case time step is value 2
-			//(time cost of 1 to load and time cost of 1 to execute)
-			retVal = 2;
-		}
+		//treat this like a normal line
+		//relies on lazy evaluation
+		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
+			(*currentLine)++;
 		else
-		{
-			return 0;
-		}
+			*currentLine = iflines[iflineIndex].gotoline;
+
+		//return the time taken to execute this step
+		//in this case time step is value 1
+		retVal = 1;
+	}
+	else if(timeRemaining == -1 || timeRemaining >= 2)
+	{
+		//current line not inside the cache; load into cache
+		//TODO: Implement this function
+		loadIntoCache(p, *currentLine);
+		
+		//treat this like a normal line
+		//relies on lazy evaluation
+		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
+			(*currentLine)++;
+		else
+			*currentLine = iflines[iflineIndex].gotoline;
+
+		//return the time taken to execute this step
+		//in this case time step is value 2
+		//(time cost of 1 to load and time cost of 1 to execute)
+		retVal = 2;
 	}
 	else
 	{
-		//page fault
-		retVal = -1;
+		return 0;
 	}
 	return retVal;
 }
@@ -68,13 +61,19 @@ int processLine(IFLINE* iflines, int* currentLine, int nIfs, int timeRemaining)
 int runProcessInTimeSlice(PROCESS* p, int timeslice)
 {
 	int overallTime = 0;
+	if(!timeslice)
+	{
+		//TODO: Lo9g and kill
+		//fprintf(
+		exit(1);
+	}
 	//run process until completion
 	if(timeslice == -1)
 	{
-		while(p->currentLine <= p->nlines)
+		while(p->curLine <= p->nlines)
 		{
 			//keep on running a process until it's finished
-			int timeConsumed = processLine(p->iflines, &(p->currentLine), p->nifs, timeslice);
+			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
 			if(timeConsumed < 0)
 			{
 				//page fault
@@ -85,9 +84,9 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	}
 	else
 	{
-		while(overallTime < timeslice && p->currentLine <= p->nlines)
+		while(overallTime < timeslice && p->curLine <= p->nlines)
 		{
-			int timeConsumed = processLine(p->iflines, &(p->currentLine), p->nifs, timeslice-overallTime);
+			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice-overallTime);
 			if(timeConsumed < 1)
 			{
 				//in this case, the processLine function has returned 0
@@ -98,5 +97,11 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			overallTime += timeConsumed;
 		}
 	}
+	//TODO: Add in that scheduled time slots is updated
+	(p->nTimeSlots)++;
+	p->scheduledTimeSlots = realloc(p->scheduledTimeSlots, p->nTimeSlots);
+	p->durationTimeSlots = realloc(p->durationTimeSlots, p->nTimeSlots);
+	p->scheduledTimeSlots[p->nTimeSlots-1] = timeSoFar;
+	p->durationTimeSlots[p->nTimeSlots-1] = overallTime;
 	return overallTime;
 }

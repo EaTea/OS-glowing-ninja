@@ -125,11 +125,11 @@ extern void computeProcessRunTime(PROCESS*);
 
 /*
  * Processes a single line of a process
- * Accepts the IFLINEs for that process and the line count that it is up to at the moment, and the number of if lines, and the amount of time remaining
+ * Accepts the location of the process in memory and the line count that it is up to at the moment, and the number of if lines, and the amount of time remaining
  * If this amount is less than 0, there is no limit; otherwise, the time consumed is always less than the time remaining
  * Returns the amount of time consumed to process that line
  */
-extern int processLine(IFLINE*, int*, int, int);
+extern int processLine(PROCESS*, int*, int, int);
 
 /*
  * Run a process with a given timeslice
@@ -152,6 +152,11 @@ extern int inCache(PROCESS*, int);
  * Returns a nonzero value iff the line number passed has been loaded into the main memory
  */
 extern int inMainMemory(PROCESS*, int);
+/*
+ * Loads the line of a PROCESS, and the 3 subsequent lines into cache
+ * Accepts the PROCESS to load, and the line number to load
+ */
+extern void loadIntoCache(PROCESS*, int);
 
 
 
