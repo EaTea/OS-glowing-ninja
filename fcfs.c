@@ -23,14 +23,4 @@ void fcfs_algorithm(PROCESS* processes)
 	}
 	
 	printf("Scheduling finish time: %d\n",currentTime);
-// 	for(int pId = 0; pId < nProcesses; pId++)
-// 	{
-// 		currentTime = max(processes[pId].stime, currentTime);
-// 		processes[pId].nTimeSlots = 2;
-// 		processes[pId].scheduledTimeSlots = realloc(processes[pId].scheduledTimeSlots,processes[pId].nTimeSlots * sizeof(int));
-// 		processes[pId].scheduledTimeSlots[0] = currentTime;
-// 		//TODO: make the function commented out below
-// 		//runProcess(processes[pId], 0);
-// 		processes[pId].scheduledTimeSlots[1] = currentTime + processes[pId].runningTime;
-// 	}
 }	

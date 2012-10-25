@@ -15,7 +15,7 @@ typedef struct {
 	int gotoline;
 	//line to go from?
 	int originline;
-	//looped
+	//number of times looped
 	int looped;
 	//k --- the value ifvar must be less than for the if loop to continue
 	int loopLimit;
@@ -23,6 +23,8 @@ typedef struct {
 
 typedef struct {
 	char *pname;
+	//current line -- the line about to be processed
+	int curLine;
 	//number (in sorted order)
 	int num;
 	//start time
@@ -41,6 +43,8 @@ typedef struct {
 	int nTimeSlots;
 	//each of the time slots scheduled for serving a process
 	int* scheduledTimeSlots;
+	//duration of each time slot
+	int* durationTimeSlots;
 } PROCESS;
 
 extern char *progname;
@@ -93,9 +97,13 @@ extern PROCESS * parseFiles(char*);
 extern int alg_flag;
 extern int time_quant;
 extern int nfiles;
+extern int timeSoFar;
 
 extern FILE *logger;
 extern int lf;
+
+extern int cacheStart;
+extern char* cacheProcessName;
 
 /*
  * Opens the logging stream and sets the log flag, otherwise prints an error.
@@ -110,9 +118,45 @@ extern void setupLogging();
 extern void newLogSession();
 
 /*
+ * TODO: I believe this will end up becoming deprecated.
  * Computes the running time of a single PROCESS data structure
  */
 extern void computeProcessRunTime(PROCESS*);
+
+/*
+ * Processes a single line of a process
+ * Accepts the location of the process in memory and the line count that it is up to at the moment, and the number of if lines, and the amount of time remaining
+ * If this amount is less than 0, there is no limit; otherwise, the time consumed is always less than the time remaining
+ * Returns the amount of time consumed to process that line
+ */
+extern int processLine(PROCESS*, int*, int, int);
+
+/*
+ * Run a process with a given timeslice
+ * Accepts the PROCESS to be run and the maximum amount of time that this program should run for.
+ * If the integer parameter is -1, then the PROCESS will run until completion.
+ * This function will modify the underlying process and add the time it has consumed into the slot for this process
+ * Returns the amount of time consumed in running that process.
+ */
+extern int runProcessInTimeSlice(PROCESS*, int);
+
+/*
+ * Checks if a line is inside the cache
+ * Accepts the PROCESS memory location and line number (indexed from 1)
+ * Returns a nonzero value iff the line number passed has been loaded into the cache
+ */
+extern int inCache(PROCESS*, int);
+/*
+ * Checks if a line is inside the main memory 
+ * Accepts the PROCESS location inside memory and line number (indexed from 1)
+ * Returns a nonzero value iff the line number passed has been loaded into the main memory
+ */
+extern int inMainMemory(PROCESS*, int);
+/*
+ * Loads the line of a PROCESS, and the 3 subsequent lines into cache
+ * Accepts the PROCESS to load, and the line number to load
+ */
+extern void loadIntoCache(PROCESS*, int);
 
 
 
