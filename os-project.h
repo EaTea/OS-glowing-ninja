@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
 	char *pname;
-	//current line
+	//current line -- the line about to be processed
 	int curLine;
 	//number (in sorted order)
 	int num;
