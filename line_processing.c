@@ -27,15 +27,17 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
 			(*currentLine)++;
 		else
+		{
 			*currentLine = iflines[iflineIndex].gotoline;
+			iflines[iflineIndex].looped++;
+		}
 
 		//return the time taken to execute this step
 		//in this case time step is value 1
 		retVal = 1;
 	}
 	else if(timeRemaining == -1 || timeRemaining >= 2)
-	{
-		//current line not inside the cache; load into cache
+	{ //current line not inside the cache; load into cache
 		//TODO: Implement this function
 		loadIntoCache(p, *currentLine);
 		
@@ -44,7 +46,10 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
 			(*currentLine)++;
 		else
+		{
 			*currentLine = iflines[iflineIndex].gotoline;
+			iflines[iflineIndex].looped++;
+		}
 
 		//return the time taken to execute this step
 		//in this case time step is value 2
@@ -72,6 +77,8 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	{
 		while(p->curLine <= p->nlines)
 		{
+			//printf("%s\n", p->pname);
+			//printf("%d, %d\n", p->curLine, p->nlines);
 			//keep on running a process until it's finished
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
 			if(timeConsumed < 0)
@@ -98,6 +105,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 		}
 	}
 	//TODO: Add in that scheduled time slots is updated
+	//TODO: Verify this worked
 	(p->nTimeSlots)++;
 	p->scheduledTimeSlots = realloc(p->scheduledTimeSlots, p->nTimeSlots);
 	p->durationTimeSlots = realloc(p->durationTimeSlots, p->nTimeSlots);
