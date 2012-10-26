@@ -168,6 +168,12 @@ extern int inMainMemory(PROCESS*, int);
  */
 extern void loadIntoCache(PROCESS*, int);
 
+/*
+	 Dumps the cache to a stream specified by a FILE*
+	 Accepts the stream to write to; assumes without checking that thisstream can be written to
+	*/
+extern void dumpCacheToStream(FILE*);
+
 
 
 /**QUEUE**/
