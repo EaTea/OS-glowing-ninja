@@ -45,6 +45,9 @@ typedef struct {
 	int* scheduledTimeSlots;
 	//duration of each time slot
 	int* durationTimeSlots;
+
+	//actual lines
+	char **lines;
 } PROCESS;
 
 extern char *progname;

@@ -128,6 +128,7 @@ PROCESS *readFiles() {
 					pp->pname = malloc(strlen(*fparse)+1);
 					strcpy(pp->pname,*fparse);
 					//file is valid and has a start time at the beginning
+					//TODO: Nic to confirm, what happens in the case that the file begins invalidly?
 					pp->stime = strtol(line,NULL,10);
 					//construct a new process and initialise its default values
 					pp->nlines = pp->nifs = pp->runningTime = 0;
@@ -137,6 +138,7 @@ PROCESS *readFiles() {
 					pp->scheduledTimeSlots = (int*) NULL;
 					pp->durationTimeSlots = (int*) NULL;
 					pp->nTimeSlots = 0;
+					pp->lines = (char**) NULL;
 				} else {
 					fprintf(stderr,"Start time missing from %s\n",*fparse);
 					fprintf(logger, "Fatal Error: Start time missing from %s\n",*fparse);
@@ -148,6 +150,11 @@ PROCESS *readFiles() {
 					if (fgets(line,sizeof line,fp) != NULL) {
 						trimLine(line);
 						++(pp->nlines);
+						pp->lines = (char**)realloc(pp->lines, pp->nlines * (sizeof(char*)));
+						//explictly initialise pointer to NULL to avoid memory referential issues
+						(pp->lines)[pp->nlines-1] = (char*) NULL;
+						(pp->lines)[pp->nlines-1] = malloc((strlen(line) + 1) * sizeof(char));
+						strcpy((pp->lines)[pp->nlines-1], line);
 						//check for existence of ifline
 						if (findIfLine(pp,line,pp->nlines)) {
 							IFLINE *il = pp->iflines;
