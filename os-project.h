@@ -107,6 +107,7 @@ extern int time_quant;
 extern int nfiles;
 extern int timeSoFar;
 extern int memoryManage;
+extern PROCESS* processList;
 
 extern FILE *logger;
 extern int lf;
