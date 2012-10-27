@@ -112,9 +112,6 @@ extern PROCESS* processList;
 extern FILE *logger;
 extern int lf;
 
-extern int cacheStart;
-extern char cacheProcessName[BUFSIZ];
-
 /*
  * Opens the logging stream and sets the log flag, otherwise prints an error.
  * Note: setupLogging() does not cause program failure; inability to log is considered

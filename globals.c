@@ -11,6 +11,3 @@ int timeSoFar = 0;
 int memoryManage;
 PROCESS* processList = NULL;
 
-//cache constants
-int cacheStart = -4;
-char cacheProcessName[BUFSIZ];
