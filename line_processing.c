@@ -37,7 +37,14 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		retVal = 1;
 	}
 	else if(timeRemaining == -1 || timeRemaining >= 2)
-	{ //current line not inside the cache; load into cache
+	{ 
+		//TODO
+		//if memory dump should occur in between
+		//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
+		//{
+		//	dumpCacheToStream(memoryDumpStream);
+		//}
+		//current line not inside the cache; load into cache
 		//TODO: Implement this function
 		loadIntoCache(p, *currentLine);
 		

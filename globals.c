@@ -11,3 +11,4 @@ int timeSoFar = 0;
 int memoryManage;
 PROCESS* processList = NULL;
 
+FILE* memoryDumpStream = NULL;

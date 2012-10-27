@@ -110,6 +110,7 @@ extern int memoryManage;
 extern PROCESS* processList;
 
 extern FILE *logger;
+extern FILE *memoryDumpStream;
 extern int lf;
 
 /*
@@ -180,6 +181,16 @@ extern void initialiseCache();
 	 Free any dynamic memory allocated to the cache
 	*/
 extern void tearDownCache();
+
+/*
+	 Sets up the memory dump stream
+	*/
+extern void setupMemoryDump();
+
+/*
+	 Closes the memory dump stream
+	*/
+extern void tearDownMemoryDump;
 
 
 
