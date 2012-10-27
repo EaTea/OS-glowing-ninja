@@ -1,0 +1,65 @@
+#include "os-project.h"
+
+LIST* new_list()
+{
+	LIST* l = malloc(sizeof(LIST));
+	first = NULL;
+	int size = 0;
+}
+
+//assumes frame is well-formed
+void appendToList(LIST* l, FRAME* f)
+{
+	if(l == NULL || f == NULL)
+	{
+		//TODO: Error
+		return;
+	}
+	FRAME* tmp = l->first;
+	//TODO: Ensure that when a FRAME is created next is always NULL
+	if(tmp != NULL)
+	{
+		while(tmp->next != NULL)
+		{
+			tmp = (l->first).next;
+		}
+		tmp->next = f;
+	}
+	else
+	{
+		l->first = f;
+	}
+}
+
+int isInList(LIST* l, char* pname, int line, FRAME* f, FRAME* p)
+{
+	if(l == NULL || f == NULL || p == NULL)
+	{
+		//TODO: Error
+		return;
+	}
+	p = NULL;
+	f = l->first;
+	if(f != NULL)
+	{
+		while(f->next != NULL && strcmp(pname, f->pname) && (line < f->lineStart || line > f->lineStart+1))
+		{
+			p = f;
+			f = (l->first).next;
+		}
+		return f != NULL;
+	}
+	return 0;
+}
+
+//assumes that this f is already in l
+void bringElementToFront(LIST* l, FRAME* f, FRAME* p)
+{
+	if(l == NULL || f == NULL || p == NULL)
+	{
+		//TODO: Error
+		return;
+	}
+	p->next = f->next;
+	f->next = l->first;
+}

@@ -190,7 +190,7 @@ extern void setupMemoryDump();
 /*
 	 Closes the memory dump stream
 	*/
-extern void tearDownMemoryDump;
+extern void tearDownMemoryDump();
 
 
 
@@ -209,3 +209,20 @@ extern PROCESS *dequeue(QUEUE*);
 extern void enqueue(QUEUE*, PROCESS*);
 extern int is_empty(QUEUE);
 extern int is_full(QUEUE);
+
+
+/**
+	Frame definition
+	*/
+typedef struct frame {
+	char pname[BUFSIZ];
+	int lineStart;
+	char **page;
+	struct frame* next;
+} FRAME;
+
+typedef struct l
+{
+	FRAME* first;
+	int size;
+} LIST;
