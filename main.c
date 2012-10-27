@@ -1,6 +1,10 @@
 #include "os-project.h"
 
 int schedule(int flag,PROCESS *ps) {
+	//if(memoryManage)
+	//{
+		initialiseCache();
+	//}
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
@@ -24,6 +28,11 @@ int schedule(int flag,PROCESS *ps) {
 		printf("%s\n", ps[y].lines[j]);
   }
 	}
+
+	//if(memoryManage)
+	//{
+		tearDownCache();
+	//}
 	
   return 0;
 }

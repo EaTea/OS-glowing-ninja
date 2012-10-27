@@ -171,6 +171,16 @@ extern void loadIntoCache(PROCESS*, int);
 	*/
 extern void dumpCacheToStream(FILE*);
 
+/*
+	 Initialise the cache using dynamic memory allocation
+	 Call at the beginning of the program invocation or the cache simulation is not guaranteed to work as expected
+	*/
+extern void initialiseCache();
+/*
+	 Free any dynamic memory allocated to the cache
+	*/
+extern void tearDownCache();
+
 
 
 /**QUEUE**/
