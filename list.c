@@ -1,8 +1,8 @@
 #include "os-project.h"
 
-LIST* new_list()
+FRAME_LIST* new_list()
 {
-	LIST* l = malloc(sizeof(LIST));
+	FRAME_LIST* l = malloc(sizeof(FRAME_LIST));
 	l->first = NULL;
 	l->last = first;
 	l->size = 0;
@@ -10,7 +10,7 @@ LIST* new_list()
 }
 
 //assumes frame is well-formed
-void appendToList(LIST* l, FRAME* f)
+void appendToList(FRAME_LIST* l, FRAME* f)
 {
 	if(l == NULL || f == NULL)
 	{
@@ -32,7 +32,7 @@ void appendToList(LIST* l, FRAME* f)
 	}
 }
 
-int isInList(LIST* l, char* pname, int line, FRAME* f, FRAME* p)
+int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f, FRAME* p)
 {
 	if(l == NULL || f == NULL || p == NULL)
 	{
@@ -54,7 +54,7 @@ int isInList(LIST* l, char* pname, int line, FRAME* f, FRAME* p)
 }
 
 //assumes that this f is already in l
-void bringElementToFront(LIST* l, FRAME* f, FRAME* p)
+void bringElementToFront(FRAME_LIST* l, FRAME* f, FRAME* p)
 {
 	if(l == NULL || f == NULL || p == NULL)
 	{
@@ -63,4 +63,9 @@ void bringElementToFront(LIST* l, FRAME* f, FRAME* p)
 	}
 	p->next = f->next;
 	f->next = l->first;
+}
+
+void destroyList(FRAME_LIST* l)
+{
+	//TODO: cleanup
 }

@@ -226,4 +226,4 @@ typedef struct l
 	FRAME* first;
 	FRAME* last;
 	int size;
-} LIST;
+} FRAME_LIST;
