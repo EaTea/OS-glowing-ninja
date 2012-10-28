@@ -2,7 +2,6 @@
 
 static FRAME_LIST * mainMemoryList;
 static const int cacheSize = 8;
-static const char* NO_VALUE = "<<NO LINE STORED IN FRAME>>";
 
 void initialiseMainMemory()
 {
@@ -28,6 +27,7 @@ FRAME* newFrame()
 	f->page[0] = malloc(sizeof(char)*BUFSIZ);
 	f->page[1] = malloc(sizeof(char)*BUFSIZ);
 	f->next = NULL;
+	f->previous = NULL;
 	return f;
 }
 
@@ -39,12 +39,17 @@ void recursiveDestroyFrame(FRAME* f)
 	free(f->page);
 	free(f);
 	if(tmp != NULL)
-		recursiveDestroyFrame(tmp);
+		return recursiveDestroyFrame(tmp);
 }
 
+//loads PROCESS p's currentLine and currentLine+1 into a frame
 void loadIntoMainMemory(PROCESS* p, int currentLine)
 {
 	if(p == NULL)
+	{
+		//TODO:throw an error!
+		return;
+	}
 	if(currentLine < 0 || currentLine > p->nlines)
 	{
 		//throw an error
@@ -56,10 +61,20 @@ void loadIntoMainMemory(PROCESS* p, int currentLine)
 	f->lineStart = currentLine;
 	strcpy(f->page[0],p->lines[currentLine-1]);
 	strcpy(f->page[1], currentLine+1 <= p->nlines ? p->lines[currentLine] : NO_VALUE);
+	bringElementToFront(mainMemoryList, f);
 }
 
-int inMainMemory(PROCESS* p, int currentLine)
+int inMainMemory(PROCESS* p, int currentLine, FRAME* f)
 {
+	if(p == NULL || currentLine <= 0 || currentLine > p->nlines)
+	{
+		//TODO: error
+	}
+	//inMainMemory checks that there exists two frames f1, and f2 such that 
+	//f1.page[0] = currentLine
+	//f1.page[1] = currentLine+1
+	//f2.page[0] = currentLine+2
+	//f2.page[1] = currentLine+3
+	return isInList(mainMemoryList,p->pname,currentLine,f1);
 	//leverage knowledge that cache is always of size 8
-	return 1;
 }
