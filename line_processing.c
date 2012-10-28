@@ -151,6 +151,17 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice-overallTime);
 			if(timeConsumed < 1)
 			{
+				//page fault
+				if(timeConsumed == -1)
+				{
+					printf("Page Fault; missing the first 2 lines\n");
+					loadIntoMainMemory(p,p->curLine);
+				}
+				else if(timeConsumed == -2)
+				{
+					printf("Page Fault; missing the last 2 lines\n");
+					loadIntoMainMemory(p,p->curLine+2);
+				}
 				//in this case, the processLine function has returned 0
 				//OR
 				//page fault
