@@ -112,15 +112,8 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			//printf("%s\n", p->pname);
 			//printf("%d, %d\n", p->curLine, p->nlines);
 			//keep on running a process until it's finished
-			printf("Line:%d\n",p->curLine);
+			//printf("Line:%d\n",p->curLine);
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
-			//TODO
-			//if memory dump should occur in between
-			//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
-			//{
-			//	dumpCacheToStream(memoryDumpStream);
-			//	dumpMainMemoryToStream(memoryDumpStream);
-			//}
 			if(timeConsumed < 0)
 			{
 				//page fault
@@ -128,13 +121,11 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				{
 					printf("Page Fault; missing the first 2 lines\n");
 					loadIntoMainMemory(p,p->curLine);
-					dumpMainMemoryToStream(memoryDumpStream);
 				}
 				else if(timeConsumed == -2)
 				{
 					printf("Page Fault; missing the last 2 lines\n");
 					loadIntoMainMemory(p,p->curLine+2);
-					dumpMainMemoryToStream(memoryDumpStream);
 				}
 			}
 			else
@@ -142,6 +133,16 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				printf("TimeSoFar:%d\n", overallTime);
 				overallTime += timeConsumed;
 			}
+			//TODO
+			//if memory dump should occur in between
+			if(nextTimeToDumpIndex < nToDumps && timeSoFar+overallTime >= timesToTakeDumps[nextTimeToDumpIndex])
+			{
+				dumpCacheToStream(memoryDumpStream);
+				dumpMainMemoryToStream(memoryDumpStream);
+				if(nextTimeToDumpIndex < nToDumps)
+					nextTimeToDumpIndex++;
+			}
+
 		}
 	}
 	else
@@ -161,6 +162,14 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				{
 					printf("Page Fault; missing the last 2 lines\n");
 					loadIntoMainMemory(p,p->curLine+2);
+				}
+
+				if(nextTimeToDumpIndex < nToDumps && timeSoFar+overallTime >= timesToTakeDumps[nextTimeToDumpIndex])
+				{
+					dumpCacheToStream(memoryDumpStream);
+					dumpMainMemoryToStream(memoryDumpStream);
+					if(nextTimeToDumpIndex < nToDumps)
+						nextTimeToDumpIndex++;
 				}
 				//in this case, the processLine function has returned 0
 				//OR

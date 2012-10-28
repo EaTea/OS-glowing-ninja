@@ -13,3 +13,7 @@ PROCESS* processList = NULL;
 
 FILE* memoryDumpStream = NULL;
 const char* NO_VALUE = "<<NO LINE STORED>>";
+
+int* timesToTakeDumps = NULL;
+int nToDumps;
+int nextTimeToDumpIndex;

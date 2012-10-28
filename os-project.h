@@ -123,6 +123,10 @@ extern int timeSoFar;
 extern int memoryManage;
 extern const char* NO_VALUE;
 
+extern int* timesToTakeDumps;
+extern int nToDumps;
+extern int nextTimeToDumpIndex;
+
 extern FILE *logger;
 extern FILE *memoryDumpStream;
 extern int lf;
