@@ -3,8 +3,10 @@
 LIST* new_list()
 {
 	LIST* l = malloc(sizeof(LIST));
-	first = NULL;
-	int size = 0;
+	l->first = NULL;
+	l->last = first;
+	l->size = 0;
+	return l;
 }
 
 //assumes frame is well-formed
@@ -15,19 +17,18 @@ void appendToList(LIST* l, FRAME* f)
 		//TODO: Error
 		return;
 	}
-	FRAME* tmp = l->first;
+	FRAME* tmp = l->last;
 	//TODO: Ensure that when a FRAME is created next is always NULL
 	if(tmp != NULL)
 	{
-		while(tmp->next != NULL)
-		{
-			tmp = (l->first).next;
-		}
 		tmp->next = f;
+		++(l->size);
+		l->last = f;
 	}
 	else
 	{
 		l->first = f;
+		l->last = f;
 	}
 }
 
