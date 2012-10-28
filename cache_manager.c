@@ -70,14 +70,14 @@ void loadIntoCache(PROCESS* p, int lineNumber)
 	}
 	//record this process as the new process in cache
 	strcpy(pgOnePName, p->pname);
-	strcpy(pgTwoPName, p->pname);
 	//record the line number of the cache
 	pgOneStart = lineNumber;
-	pgTwoStart = lineNumber+2;
 	strcpy(pageOne[0],p->lines[lineNumber-1]);
+	strcpy(pageOne[1], lineNumber+1 <= p->nlines ? p->lines[lineNumber] : NO_VALUE);
 	//hit the end of process whilst attempting to load process into cache
 	//record "INVALID LINE" if this occurs
-	strcpy(pageOne[1], lineNumber+1 <= p->nlines ? p->lines[lineNumber] : NO_VALUE);
+	strcpy(pgTwoPName, p->pname);
+	pgTwoStart = lineNumber+2;
 	strcpy(pageTwo[0], lineNumber+2 <= p->nlines ? p->lines[lineNumber+1] : NO_VALUE);
 	strcpy(pageTwo[1], lineNumber+3 <= p->nlines ? p->lines[lineNumber+2] : NO_VALUE);
 }
