@@ -43,12 +43,12 @@ int inCache(PROCESS* p, int lineNumber)
 	//page one process is sitting inside memory
 	if(!strcmp(p->pname, pgOnePName))
 		//page one's startline matches the line number
-		if(pgOneStart <= lineNumber && pgOneStart+1 > lineNumber)
+		if(pgOneStart == lineNumber || pgOneStart+1 == lineNumber)
 			return 1;
 	//page two process is sitting inside memory
 	if(!strcmp(p->pname, pgTwoPName))
 		//page two's startline matches the line number
-		if(pgTwoStart <= lineNumber && pgTwoStart+1 > lineNumber)
+		if(pgTwoStart == lineNumber || pgTwoStart+1 == lineNumber)
 			return 1;
 	return 0;
 }
@@ -77,7 +77,7 @@ void loadIntoCache(FRAME* f1, FRAME* f2)
 	//hit the end of process whilst attempting to load process into cache
 	//record "INVALID LINE" if this occurs
 		strcpy(pgTwoPName, f2->pname);
-		pgTwoStart = f2->lineStart+2;
+		pgTwoStart = f2->lineStart;
 		strcpy(pageTwo[0],f2->page[0]);
 		strcpy(pageTwo[1],f2->page[1]);
 		updateMainMemory(f2);

@@ -174,7 +174,7 @@ extern int inCache(PROCESS*, int);
  * Returns a nonzero value iff the line number passed has been loaded into the main memory and through pass-by-reference the FRAME which contains this line
  * N.B.: A frame contains a line l iff the first line of the frame's page is l, and the second line of the frame's page is l+1
  */
-extern int inMainMemory(PROCESS*, int, FRAME*);
+extern int inMainMemory(PROCESS*, int, FRAME**);
 /*
  * Loads the line of a PROCESS, and the 3 subsequent lines into cache
  * Accepts the PROCESS to load, and the line number to load
@@ -247,6 +247,6 @@ typedef struct l
 
 FRAME_LIST* newList();
 void appendToList(FRAME_LIST*,FRAME*);
-int isInList(FRAME_LIST*,char*,int,FRAME*);
+int isInList(FRAME_LIST*,char*,int,FRAME**);
 void bringElementToFront(FRAME_LIST*,FRAME*);
 void destroyList(FRAME_LIST*);

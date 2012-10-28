@@ -57,7 +57,6 @@ void dumpMainMemoryToStream(FILE* stream)
 //loads PROCESS p's currentLine and currentLine+1 into a frame
 void loadIntoMainMemory(PROCESS* p, int currentLine)
 {
-	fprintf(memoryDumpStream,"Loading %s %d\n",p->pname,currentLine);
 	dumpMainMemoryToStream(memoryDumpStream);
 	if(p == NULL)
 	{
@@ -83,7 +82,7 @@ void updateMainMemory(FRAME* f)
 	bringElementToFront(mainMemoryList,f);
 }
 
-int inMainMemory(PROCESS* p, int currentLine, FRAME* f)
+int inMainMemory(PROCESS* p, int currentLine, FRAME** f)
 {
 	if(p == NULL || currentLine <= 0 || currentLine > p->nlines)
 	{

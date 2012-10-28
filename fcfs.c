@@ -18,8 +18,9 @@ void fcfs_algorithm(PROCESS* processes)
 
 		printf("Starting process %d, at time %d\n",i,currentTime);
 		//run this process to completion
+		printf("Once off load into main memory; first 4 lines\n");
 		loadIntoMainMemory(pp,1);
-		if(pp->nlines <= 3)
+		if(pp->nlines >= 3)
 		{
 			loadIntoMainMemory(pp,3);
 		}

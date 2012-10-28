@@ -34,23 +34,22 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 	++(l->size);
 }
 
-int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f)
+int isInList(FRAME_LIST* l, char* pname, int line, FRAME** f)
 {
 	if(l == NULL || pname == NULL)
 	{
 		//TODO: Error
 		return 0;
 	}
-	f = l->first;
-	while(f != NULL)
+	*f = l->first;
+	while(*f != NULL)
 	{
-		if(!strcmp(pname, f->pname))
-			if(f->lineStart == line)
+		if(!strcmp(pname, (*f)->pname))
+			if((*f)->lineStart == line)
 				break;
-		f = f->next;
+		*f = (*f)->next;
 	}
-
-	return f != NULL;
+	return *f != NULL;
 }
 
 //assumes that this f is already in l
