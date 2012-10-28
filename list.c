@@ -36,7 +36,7 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 
 int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f)
 {
-	if(l == NULL || f == NULL || p == NULL)
+	if(l == NULL || f == NULL || pname == NULL)
 	{
 		//TODO: Error
 		return 0;

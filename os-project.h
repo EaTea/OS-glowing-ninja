@@ -50,6 +50,20 @@ typedef struct {
 	char **lines;
 } PROCESS;
 
+/**
+	Frame definition
+	*/
+typedef struct frame {
+	char pname[BUFSIZ];
+	int lineStart;
+	char **page;
+	struct frame* next;
+	struct frame* previous;
+} FRAME;
+FRAME* newFrame();
+void recursiveDestroyFrame(FRAME*);
+
+
 extern char *progname;
 
 /*
@@ -107,7 +121,7 @@ extern int time_quant;
 extern int nfiles;
 extern int timeSoFar;
 extern int memoryManage;
-extern char* NO_VALUE;
+extern const char* NO_VALUE;
 
 extern FILE *logger;
 extern FILE *memoryDumpStream;
@@ -165,7 +179,7 @@ extern int inMainMemory(PROCESS*, int, FRAME*);
  * Loads the line of a PROCESS, and the 3 subsequent lines into cache
  * Accepts the PROCESS to load, and the line number to load
  */
-extern void loadIntoCache(PROCESS*, int);
+extern void loadIntoCache(FRAME*,FRAME*);
 
 /*
 	 Dumps the cache to a stream specified by a FILE*
@@ -216,20 +230,6 @@ extern PROCESS *dequeue(QUEUE*);
 extern void enqueue(QUEUE*, PROCESS*);
 extern int is_empty(QUEUE);
 extern int is_full(QUEUE);
-
-
-/**
-	Frame definition
-	*/
-typedef struct frame {
-	char pname[BUFSIZ];
-	int lineStart;
-	char **page;
-	struct frame* next;
-	struct frame* previous;
-} FRAME;
-FRAME* newFrame();
-void recursiveDestroyFrame(FRAME*);
 
 typedef struct l
 {

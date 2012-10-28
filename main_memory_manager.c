@@ -39,7 +39,7 @@ void recursiveDestroyFrame(FRAME* f)
 	free(f->page);
 	free(f);
 	if(tmp != NULL)
-		return recursiveDestroyFrame(tmp);
+		recursiveDestroyFrame(tmp);
 }
 
 //loads PROCESS p's currentLine and currentLine+1 into a frame
@@ -75,6 +75,6 @@ int inMainMemory(PROCESS* p, int currentLine, FRAME* f)
 	//f1.page[1] = currentLine+1
 	//f2.page[0] = currentLine+2
 	//f2.page[1] = currentLine+3
-	return isInList(mainMemoryList,p->pname,currentLine,f1);
+	return isInList(mainMemoryList,p->pname,currentLine,f);
 	//leverage knowledge that cache is always of size 8
 }
