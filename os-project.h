@@ -186,6 +186,11 @@ extern void loadIntoCache(FRAME*,FRAME*);
 	 Accepts the stream to write to; assumes without checking that thisstream can be written to
 	*/
 extern void dumpCacheToStream(FILE*);
+/*
+	 Dumps the main memory contents to a stream specified by a FILE*
+	 Accepts the stream to write to; assumes without checking that thisstream can be written to
+	*/
+extern void dumpMainMemoryToStream(FILE*);
 
 /*
 	 Initialise the cache using dynamic memory allocation

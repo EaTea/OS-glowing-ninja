@@ -42,6 +42,19 @@ void recursiveDestroyFrame(FRAME* f)
 		recursiveDestroyFrame(tmp);
 }
 
+static void recursiveDumpToStream(FILE* stream, FRAME* f, int fnumber)
+{
+	fprintf(stream,"Main Memory: Frame %d\nProcess Stored: %s\n", fnumber, f->pname);
+	fprintf(stream,"%s\n%s\n",f->page[0],f->page[1]);
+	if(f->next != NULL)
+		recursiveDumpToStream(stream,f->next,fnumber+1);
+}
+
+void dumpMainMemoryToStream(FILE* stream)
+{
+	recursiveDumpToStream(stream,mainMemoryList->first,1);
+}
+
 //loads PROCESS p's currentLine and currentLine+1 into a frame
 void loadIntoMainMemory(PROCESS* p, int currentLine)
 {

@@ -52,6 +52,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 				//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
 				//{
 				//	dumpCacheToStream(memoryDumpStream);
+				//	dumpMainMemoryToStream(memoryDumpStream);
 				//}
 				//current line not inside the cache; load into cache
 				//TODO: Implement this function
@@ -121,6 +122,13 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				}
 				break;
 			}
+			//TODO
+			//if memory dump should occur in between
+			//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
+			//{
+			//	dumpCacheToStream(memoryDumpStream);
+			//	dumpMainMemoryToStream(memoryDumpStream);
+			//}
 			overallTime += timeConsumed;
 		}
 	}
