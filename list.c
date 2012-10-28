@@ -24,6 +24,8 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 		tmp->next = f;
 		++(l->size);
 		l->last = f;
+		f->previous = tmp;
+		f->next = NULL;
 	}
 	else
 	{
@@ -32,37 +34,39 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 	}
 }
 
-int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f, FRAME* p)
+int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f)
 {
 	if(l == NULL || f == NULL || p == NULL)
 	{
 		//TODO: Error
 		return 0;
 	}
-	p = NULL;
 	f = l->first;
 	if(f != NULL)
 	{
-		while(f->next != NULL && strcmp(pname, f->pname) && (line < f->lineStart || line > f->lineStart+1))
-		{
-			p = f;
-			f = (l->first)->next;
-		}
+		while(f != NULL && strcmp(pname, f->pname) && line != f->lineStart)
+			f = f->next;
 		return f != NULL;
 	}
 	return 0;
 }
 
 //assumes that this f is already in l
-void bringElementToFront(FRAME_LIST* l, FRAME* f, FRAME* p)
+void bringElementToFront(FRAME_LIST* l, FRAME* f)
 {
-	if(l == NULL || f == NULL || p == NULL)
+	if(l == NULL || f == NULL)
 	{
 		//TODO: Error
 		return;
 	}
-	p->next = f->next;
-	f->next = l->first;
+	FRAME* p = f->previous;
+	//otherwise f is the very front of the list anyway
+	if(p != NULL)
+	{
+		p->next = f->next;
+		f->next = l->first;
+		f->previous = NULL;
+	}
 }
 
 void destroyList(FRAME_LIST* l)
