@@ -212,7 +212,7 @@ extern void setupMemoryDump();
 	*/
 extern void tearDownMemoryDump();
 
-extern void initialiaseMainMemory();
+extern void initialiseMainMemory();
 
 extern void tearDownMainMemory();
 

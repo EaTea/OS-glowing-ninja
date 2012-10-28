@@ -3,6 +3,7 @@
 int schedule(int flag,PROCESS *ps) {
 	//if(memoryManage)
 	//{
+		initialiseMainMemory();
 		initialiseCache();
 	//}
   switch (flag) {
@@ -32,6 +33,7 @@ int schedule(int flag,PROCESS *ps) {
 	//if(memoryManage)
 	//{
 		tearDownCache();
+		tearDownMainMemory();
 	//}
 	
   return 0;
