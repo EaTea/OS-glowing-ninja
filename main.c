@@ -80,7 +80,6 @@ int main(int argc, char *argv[]) {
     fprintf(logger,"Using Algorithm: %s\n",algorithm);
   }
   PROCESS* processes = parseFiles(*argv);
-	processList = processes;
   if (lf) fprintf(logger,"%d files successfully read\n",nfiles);
   PROCESS* p = processes;
   if (lf) {
