@@ -23,21 +23,24 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 	int retVal = 0;
 	printf("InCache?%d\n",inCache(p,*currentLine));
 	//if line in cache
-	if(inCache(p, *currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
+	if(!memoryManage || inCache(p, *currentLine))
 	{
-		//treat this like a normal line
-		//relies on lazy evaluation
-		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
-			(*currentLine)++;
-		else
+		if(timeRemaining == -1 || timeRemaining >= 1)
 		{
-			*currentLine = iflines[iflineIndex].gotoline;
-			iflines[iflineIndex].looped++;
-		}
+			//treat this like a normal line
+			//relies on lazy evaluation
+			if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
+				(*currentLine)++;
+			else
+			{
+				*currentLine = iflines[iflineIndex].gotoline;
+				iflines[iflineIndex].looped++;
+			}
 
-		//return the time taken to execute this step
-		//in this case time step is value 1
-		retVal = 1;
+			//return the time taken to execute this step
+			//in this case time step is value 1
+			retVal = 1;
+		}
 	}
 	//not in cache
 	else
