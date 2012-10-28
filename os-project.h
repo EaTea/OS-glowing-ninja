@@ -226,6 +226,7 @@ typedef struct frame {
 	int lineStart;
 	char **page;
 	struct frame* next;
+	struct frame* previous;
 } FRAME;
 FRAME* newFrame();
 void recursiveDestroyFrame(FRAME*);
