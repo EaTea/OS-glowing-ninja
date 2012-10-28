@@ -1,6 +1,5 @@
 #include "os-project.h"
 
-static const char* NO_VALUE = "<<NO LINE STORED IN CACHE>>";
 
 static char **pageOne;
 static char **pageTwo;
@@ -54,32 +53,32 @@ int inCache(PROCESS* p, int lineNumber)
 	return 0;
 }
 
-void loadIntoCache(PROCESS* p, int lineNumber)
+void loadIntoCache(FRAME* f1, FRAME* f2)
 {
-	if(p == NULL)
+	if(f1 == NULL)
 	{
-		//throw an error
-		puts("Tried to load a NULL pointer into cache\n");
+		//TODO: ERROR
 		return;
 	}
-	if(lineNumber < 0 || lineNumber > p->nlines)
-	{
-		//throw an error
-		puts("Tried to load a block entirely outside of process into cache\n");
-		return;
-	}
+	//f1 is FRAME containing lines lineNumber, lineNumber+1
+	//f2 is FRAME containing lines lineNumber+2, lineNumber+3
+	//p1, p2 are f1, f2's parents resp.
+	//assumes that you know the FRAME in main memory that has the files you needed
 	//record this process as the new process in cache
-	strcpy(pgOnePName, p->pname);
+	strcpy(pgOnePName, f1->pname);
 	//record the line number of the cache
-	pgOneStart = lineNumber;
-	strcpy(pageOne[0],p->lines[lineNumber-1]);
-	strcpy(pageOne[1], lineNumber+1 <= p->nlines ? p->lines[lineNumber] : NO_VALUE);
+	pgOneStart = f1->lineStart;
+	strcpy(pageOne[0],f1->page[0]);
+	strcpy(pageOne[1],f1->page[1]);
+	if(f2 != NULL)
+	{
 	//hit the end of process whilst attempting to load process into cache
 	//record "INVALID LINE" if this occurs
-	strcpy(pgTwoPName, p->pname);
-	pgTwoStart = lineNumber+2;
-	strcpy(pageTwo[0], lineNumber+2 <= p->nlines ? p->lines[lineNumber+1] : NO_VALUE);
-	strcpy(pageTwo[1], lineNumber+3 <= p->nlines ? p->lines[lineNumber+2] : NO_VALUE);
+		strcpy(pgTwoPName, f2->pname);
+		pgTwoStart = f2->lineStart+2;
+		strcpy(pageTwo[0],f2->page[0]);
+		strcpy(pageTwo[1],f2->page[1]);
+	}
 }
 
 void dumpCacheToStream(FILE* stream)
