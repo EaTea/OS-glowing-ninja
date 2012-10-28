@@ -12,3 +12,4 @@ int memoryManage;
 PROCESS* processList = NULL;
 
 FILE* memoryDumpStream = NULL;
+const char* NO_VALUE = "<<NO LINE STORED>>";
