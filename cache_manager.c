@@ -1,6 +1,6 @@
 #include "os-project.h"
 
-static const char* NO_CACHE_VALUE = "<<NO LINE STORED>>";
+static const char* NO_VALUE = "<<NO LINE STORED IN CACHE>>";
 
 static char **pageOne;
 static char **pageTwo;
@@ -62,7 +62,7 @@ void loadIntoCache(PROCESS* p, int lineNumber)
 		puts("Tried to load a NULL pointer into cache\n");
 		return;
 	}
-	if(lineNumber > p->nlines)
+	if(lineNumber < 0 || lineNumber > p->nlines)
 	{
 		//throw an error
 		puts("Tried to load a block entirely outside of process into cache\n");
@@ -77,9 +77,9 @@ void loadIntoCache(PROCESS* p, int lineNumber)
 	strcpy(pageOne[0],p->lines[lineNumber-1]);
 	//hit the end of process whilst attempting to load process into cache
 	//record "INVALID LINE" if this occurs
-	strcpy(pageOne[1], lineNumber+1 <= p->nlines ? p->lines[lineNumber] : NO_CACHE_VALUE);
-	strcpy(pageTwo[0], lineNumber+2 <= p->nlines ? p->lines[lineNumber+1] : NO_CACHE_VALUE);
-	strcpy(pageTwo[1], lineNumber+3 <= p->nlines ? p->lines[lineNumber+2] : NO_CACHE_VALUE);
+	strcpy(pageOne[1], lineNumber+1 <= p->nlines ? p->lines[lineNumber] : NO_VALUE);
+	strcpy(pageTwo[0], lineNumber+2 <= p->nlines ? p->lines[lineNumber+1] : NO_VALUE);
+	strcpy(pageTwo[1], lineNumber+3 <= p->nlines ? p->lines[lineNumber+2] : NO_VALUE);
 }
 
 void dumpCacheToStream(FILE* stream)

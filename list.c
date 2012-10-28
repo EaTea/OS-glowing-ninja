@@ -1,10 +1,10 @@
 #include "os-project.h"
 
-FRAME_LIST* new_list()
+FRAME_LIST* newList()
 {
 	FRAME_LIST* l = malloc(sizeof(FRAME_LIST));
 	l->first = NULL;
-	l->last = first;
+	l->last = l->first;
 	l->size = 0;
 	return l;
 }
@@ -37,7 +37,7 @@ int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f, FRAME* p)
 	if(l == NULL || f == NULL || p == NULL)
 	{
 		//TODO: Error
-		return;
+		return 0;
 	}
 	p = NULL;
 	f = l->first;
@@ -46,7 +46,7 @@ int isInList(FRAME_LIST* l, char* pname, int line, FRAME* f, FRAME* p)
 		while(f->next != NULL && strcmp(pname, f->pname) && (line < f->lineStart || line > f->lineStart+1))
 		{
 			p = f;
-			f = (l->first).next;
+			f = (l->first)->next;
 		}
 		return f != NULL;
 	}

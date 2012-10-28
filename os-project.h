@@ -191,6 +191,12 @@ extern void setupMemoryDump();
 	*/
 extern void tearDownMemoryDump();
 
+extern void initialiaseMainMemory();
+
+extern void tearDownMainMemory();
+
+extern void loadIntoMainMemory(PROCESS*,int);
+
 
 
 /**QUEUE**/
@@ -219,6 +225,8 @@ typedef struct frame {
 	char **page;
 	struct frame* next;
 } FRAME;
+FRAME* newFrame();
+void recursiveDestroyFrame(FRAME*);
 
 typedef struct l
 {
@@ -226,3 +234,9 @@ typedef struct l
 	FRAME* last;
 	int size;
 } FRAME_LIST;
+
+FRAME_LIST* newList();
+void appendToList(FRAME_LIST*,FRAME*);
+int isInList(FRAME_LIST*,char*,int,FRAME*,FRAME*);
+void bringElementToFront(FRAME_LIST*,FRAME*,FRAME*);
+void destroyList(FRAME_LIST*);
