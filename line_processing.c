@@ -18,9 +18,11 @@ static int IFLINESearch(IFLINE* iflines, int currentLine, int nIfs)
 int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 {
 	IFLINE* iflines = p->iflines;
+	//if there is an IFLINE find it
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
 	int retVal = 0;
 	printf("InCache?%d\n",inCache(p,*currentLine));
+	//if line in cache
 	if(inCache(p, *currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
 	{
 		//treat this like a normal line
@@ -42,22 +44,18 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 	{
 		FRAME* f1 = NULL;
 		FRAME* f2 = NULL;
+		//inMainMemory does a pass by reference and returns the FRAME*s
 		int foundLine = inMainMemory(p, *currentLine, &f1);
 		int foundLine2 = (*currentLine+2 > p->nlines || inMainMemory(p,*currentLine+2,&f2));
-		printf("f1 null? %d f2 null? %d\n",f1 == NULL, f2 == NULL);
+		//if BOTH frames were found, then four lines can be moved;
+		//alternatively if only one page is required, then foundLine2 will still be true
+		//one page is required iff we are loading the last or second last lines
 		if(foundLine && foundLine2)
 		{
+			//sufficient time to move to cache
 			if((timeRemaining == -1 || timeRemaining >= 2))
 			{ 
-				//TODO
-				//if memory dump should occur in between
-				//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
-				//{
-				//	dumpCacheToStream(memoryDumpStream);
-				//	dumpMainMemoryToStream(memoryDumpStream);
-				//}
 				//current line not inside the cache; load into cache
-				//TODO: Implement this function
 				loadIntoCache(f1,f2);
 				
 				//treat this like a normal line
@@ -84,10 +82,12 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		//not in main memory; page fault
 		else
 		{
-			dumpMainMemoryToStream(memoryDumpStream);
+			//page fault!
 			if(!foundLine)
+				//pagefault is for the first two lines
 				retVal = -1;
 			else if(!foundLine2)
+				//pagefault is for the last two lines
 				retVal = -2;
 		}
 	}
@@ -147,6 +147,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	}
 	else
 	{
+		//run the process inside a timeslice
 		while(overallTime < timeslice && p->curLine <= p->nlines)
 		{
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice-overallTime);
@@ -164,6 +165,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 					loadIntoMainMemory(p,p->curLine+2);
 				}
 
+				//if we need to take a dump and put it into the stream
 				if(nextTimeToDumpIndex < nToDumps && timeSoFar+overallTime >= timesToTakeDumps[nextTimeToDumpIndex])
 				{
 					dumpCacheToStream(memoryDumpStream);

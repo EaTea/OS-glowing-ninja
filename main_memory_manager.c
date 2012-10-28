@@ -5,6 +5,7 @@ static const int cacheSize = 8;
 
 void initialiseMainMemory()
 {
+	//make the list contaiing all the frames
 	mainMemoryList = newList();
 	for(int i = 0; i < cacheSize; i++)
 	{
@@ -33,6 +34,7 @@ FRAME* newFrame()
 
 void recursiveDestroyFrame(FRAME* f)
 {
+	//tail recursively destroy the frame f
 	FRAME* tmp = f->next;
 	free(f->page[0]);
 	free(f->page[1]);
@@ -44,6 +46,7 @@ void recursiveDestroyFrame(FRAME* f)
 
 static void recursiveDumpToStream(FILE* stream, FRAME* f, int fnumber)
 {
+	//base case
 	if(f == NULL) return;
 	fprintf(stream,"Main Memory: Frame %d\nProcess Stored: %s\n", fnumber, f->pname);
 	fprintf(stream,"%s\n%s\n",f->page[0],f->page[1]);
@@ -57,7 +60,6 @@ void dumpMainMemoryToStream(FILE* stream)
 //loads PROCESS p's currentLine and currentLine+1 into a frame
 void loadIntoMainMemory(PROCESS* p, int currentLine)
 {
-	dumpMainMemoryToStream(memoryDumpStream);
 	if(p == NULL)
 	{
 		//TODO:throw an error!
@@ -69,11 +71,13 @@ void loadIntoMainMemory(PROCESS* p, int currentLine)
 		puts("Tried to load a block entirely outside of process into cache\n");
 		return;
 	}
+	//load into the last FRAME; that's the FRAME that's been used the least
 	FRAME* f = mainMemoryList->last;
 	strcpy(f->pname, p->pname);
 	f->lineStart = currentLine;
 	strcpy(f->page[0],p->lines[currentLine-1]);
 	strcpy(f->page[1], currentLine+1 <= p->nlines ? p->lines[currentLine] : NO_VALUE);
+	//move the frame back to the beginning since it's the most recently used
 	updateMainMemory(f);
 }
 

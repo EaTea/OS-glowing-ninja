@@ -22,28 +22,30 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 	if(tmp != NULL)
 	{
 		tmp->next = f;
-		l->last = f;
 		f->previous = tmp;
 		f->next = NULL;
 	}
 	else
 	{
 		l->first = f;
-		l->last = f;
 	}
+	l->last = f;
 	++(l->size);
 }
 
 int isInList(FRAME_LIST* l, char* pname, int line, FRAME** f)
 {
+	//notice pass by reference to retrieve the frame
 	if(l == NULL || pname == NULL)
 	{
 		//TODO: Error
 		return 0;
 	}
 	*f = l->first;
+	//look through the FRAMEs and compare the name
 	while(*f != NULL)
 	{
+		//FRAME equality condition; same process and start line is the same as the looked for line
 		if(!strcmp(pname, (*f)->pname))
 			if((*f)->lineStart == line)
 				break;
@@ -71,6 +73,7 @@ void bringElementToFront(FRAME_LIST* l, FRAME* f)
 		}
 		if(f->next != NULL)
 			(f->next)->previous = p;
+		//do all the swaps to ensure the doubly linked referentiality is maintained
 		p->next = f->next;
 		f->next = l->first;
 		l->first->previous = f;
