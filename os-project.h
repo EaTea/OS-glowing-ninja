@@ -156,10 +156,11 @@ extern int runProcessInTimeSlice(PROCESS*, int);
 extern int inCache(PROCESS*, int);
 /*
  * Checks if a line is inside the main memory 
- * Accepts the PROCESS location inside memory and line number (indexed from 1)
- * Returns a nonzero value iff the line number passed has been loaded into the main memory
+ * Accepts the PROCESS location inside memory and line number (indexed from 1), and the FRAME location which (will) contain the line
+ * Returns a nonzero value iff the line number passed has been loaded into the main memory and through pass-by-reference the FRAME which contains this line
+ * N.B.: A frame contains a line l iff the first line of the frame's page is l, and the second line of the frame's page is l+1
  */
-extern int inMainMemory(PROCESS*, int);
+extern int inMainMemory(PROCESS*, int, FRAME*);
 /*
  * Loads the line of a PROCESS, and the 3 subsequent lines into cache
  * Accepts the PROCESS to load, and the line number to load
@@ -238,6 +239,6 @@ typedef struct l
 
 FRAME_LIST* newList();
 void appendToList(FRAME_LIST*,FRAME*);
-int isInList(FRAME_LIST*,char*,int,FRAME*,FRAME*);
-void bringElementToFront(FRAME_LIST*,FRAME*,FRAME*);
+int isInList(FRAME_LIST*,char*,int,FRAME*);
+void bringElementToFront(FRAME_LIST*,FRAME*);
 void destroyList(FRAME_LIST*);
