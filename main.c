@@ -1,6 +1,11 @@
 #include "os-project.h"
 
 int schedule(int flag,PROCESS *ps) {
+	//if(memoryManage)
+	//{
+		initialiseMainMemory();
+		initialiseCache();
+	//}
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
@@ -9,13 +14,28 @@ int schedule(int flag,PROCESS *ps) {
   
   fprintf(logger,"Scheduling complete. Result of Schedule:\n");
   //TODO: Move to print_schedule fn in auxfns.c
-  for (int i = 0; i < nfiles; i++) {
-	printf("%s:\t",ps[i].pname);
-	for (int j = 0; j < ps[i].nTimeSlots; j++) {
-		printf("%d\t",ps[i].scheduledTimeSlots[j]);
-		printf("%d\t",ps[i].durationTimeSlots[j]);
+  for (int y = 0; y < nfiles; y++) {
+		//HEEEEY SEXY LADY
+	printf("%s:\t",ps[y].pname);
+	//OP OP
+	for (int j = 0; j < ps[y].nTimeSlots; j++) {
+		//OPPA GANGNAM STYLE!
+		printf("(%d, %d)\t",ps[y].scheduledTimeSlots[j], ps[y].durationTimeSlots[j]);
 	} printf("\n");
+	//OP OP
+	for(int j = 0; j < ps[y].nlines; j++)
+	{
+		//OPPA GANGNAM STYLE!
+		printf("%s\n", ps[y].lines[j]);
   }
+	}
+
+	//if(memoryManage)
+	//{
+		tearDownCache();
+		tearDownMainMemory();
+	//}
+	
   return 0;
 }
 

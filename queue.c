@@ -39,3 +39,4 @@ void enqueue(QUEUE *q, PROCESS *p) {
   } else puts("Array full!!!");
 }
 
+//TODO: Make a free queue function
