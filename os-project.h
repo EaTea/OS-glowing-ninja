@@ -218,6 +218,8 @@ extern void tearDownMainMemory();
 
 extern void loadIntoMainMemory(PROCESS*,int);
 
+extern void updateMainMemory(FRAME*);
+
 
 
 /**QUEUE**/

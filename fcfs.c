@@ -13,10 +13,16 @@ void fcfs_algorithm(PROCESS* processes)
 	PROCESS *pp = processes;
 	printf("nfiles = %d\n",nfiles);
 	for (int i = 0; i < nfiles; i++,pp++) { //Work through elements.
+		timeSoFar = max(timeSoFar, pp->stime);
 		if (pp->stime > currentTime) currentTime = pp->stime; //Increment time as nothing can run.
 
 		printf("Starting process %d, at time %d\n",i,currentTime);
 		//run this process to completion
+		loadIntoMainMemory(pp,1);
+		if(pp->nlines <= 3)
+		{
+			loadIntoMainMemory(pp,3);
+		}
 		timeSoFar += runProcessInTimeSlice(pp, -1);
 	}
 	

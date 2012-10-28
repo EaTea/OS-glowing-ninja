@@ -96,7 +96,8 @@ int main(int argc, char *argv[]) {
     p->num = i+1;
   
   
-  
+  //TODO: change
+	memoryDumpStream = fopen("memDump.out","w");
   schedule(alg_flag,processes);
     
   fclose(logger);

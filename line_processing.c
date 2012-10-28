@@ -19,7 +19,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 {
 	IFLINE* iflines = p->iflines;
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
-	int retVal;
+	int retVal = 0;
 	if(inCache(p, *currentLine) && (timeRemaining == -1 || timeRemaining >= 1))
 	{
 		//treat this like a normal line
@@ -84,7 +84,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		{
 			if(!foundLine)
 				retVal = -1;
-			if(!foundLine2)
+			else if(!foundLine2)
 				retVal = -2;
 		}
 	}
@@ -109,19 +109,6 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			//printf("%d, %d\n", p->curLine, p->nlines);
 			//keep on running a process until it's finished
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
-			if(timeConsumed < 0)
-			{
-				//page fault
-				if(timeConsumed == -1)
-				{
-					loadIntoMainMemory(p,p->curLine);
-				}
-				else if(timeConsumed == -2)
-				{
-					loadIntoMainMemory(p,p->curLine+2);
-				}
-				break;
-			}
 			//TODO
 			//if memory dump should occur in between
 			//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
@@ -129,7 +116,24 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			//	dumpCacheToStream(memoryDumpStream);
 			//	dumpMainMemoryToStream(memoryDumpStream);
 			//}
-			overallTime += timeConsumed;
+			if(timeConsumed < 0)
+			{
+				//page fault
+				if(timeConsumed == -1)
+				{
+					printf("Page Fault; missing the first 2 lines\n");
+					loadIntoMainMemory(p,p->curLine);
+				}
+				else if(timeConsumed == -2)
+				{
+					printf("Page Fault; missing the last 2 lines\n");
+					loadIntoMainMemory(p,p->curLine+2);
+				}
+			}
+			else
+			{
+				overallTime += timeConsumed;
+			}
 		}
 	}
 	else
