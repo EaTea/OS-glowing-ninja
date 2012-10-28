@@ -36,36 +36,56 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		//in this case time step is value 1
 		retVal = 1;
 	}
-	else if(timeRemaining == -1 || timeRemaining >= 2)
-	{ 
-		//TODO
-		//if memory dump should occur in between
-		//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
-		//{
-		//	dumpCacheToStream(memoryDumpStream);
-		//}
-		//current line not inside the cache; load into cache
-		//TODO: Implement this function
-		loadIntoCache(p, *currentLine);
-		
-		//treat this like a normal line
-		//relies on lazy evaluation
-		if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
-			(*currentLine)++;
-		else
-		{
-			*currentLine = iflines[iflineIndex].gotoline;
-			iflines[iflineIndex].looped++;
-		}
-
-		//return the time taken to execute this step
-		//in this case time step is value 2
-		//(time cost of 1 to load and time cost of 1 to execute)
-		retVal = 2;
-	}
+	//not in cache
 	else
 	{
-		return 0;
+		FRAME* f1 = NULL;
+		FRAME* f2 = NULL;
+		int foundLine = inMainMemory(p, *currentLine, f1);
+		int foundLine2 = (*currentLine+2 > p->nlines || inMainMemory(p,*currentLine+2,f2));
+		if(foundLine && foundLine2)
+		{
+			if((timeRemaining == -1 || timeRemaining >= 2))
+			{ 
+				//TODO
+				//if memory dump should occur in between
+				//if(timeSoFar == nextMemoryDump - 1 && timesoFar + 2 == nextMemoryDump + 1)
+				//{
+				//	dumpCacheToStream(memoryDumpStream);
+				//}
+				//current line not inside the cache; load into cache
+				//TODO: Implement this function
+				loadIntoCache(f1,f2);
+				
+				//treat this like a normal line
+				//relies on lazy evaluation
+				if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
+					(*currentLine)++;
+				else
+				{
+					*currentLine = iflines[iflineIndex].gotoline;
+					iflines[iflineIndex].looped++;
+				}
+
+				//return the time taken to execute this step
+				//in this case time step is value 2
+				//(time cost of 1 to load and time cost of 1 to execute)
+				retVal = 2;
+			}
+			else
+			{
+				//not enough time to load from main into cache, return 0
+				return 0;
+			}
+		}
+		//not in main memory; page fault
+		else
+		{
+			if(!foundLine)
+				retVal = -1;
+			if(!foundLine2)
+				retVal = -2;
+		}
 	}
 	return retVal;
 }
@@ -91,6 +111,14 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			if(timeConsumed < 0)
 			{
 				//page fault
+				if(timeConsumed == -1)
+				{
+					loadIntoMainMemory(p,p->curLine);
+				}
+				else if(timeConsumed == -2)
+				{
+					loadIntoMainMemory(p,p->curLine+2);
+				}
 				break;
 			}
 			overallTime += timeConsumed;
