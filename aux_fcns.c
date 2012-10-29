@@ -9,16 +9,15 @@
 void usage() {
 	printf("Usage: \'%s [OPTIONS] FCFS in.file\' or \'%s RR n in.file\n",
 		   progname,progname);
-	puts("where in.file is a list of job files, and n is an integer \
-		 representing a time quantum\n");
+	puts("where in.file is a list of job files, and n is an integer "\
+		 "representing a time quantum\n");
 	puts("the following flags can be accepted:\n");
-	puts("-m [PARAMETERS]\n\tFlags that memory management should be \
-		 enabled, and [PARAMETERS] should be a list of \
-		 space-separated numbers\n");
-	printf("\t\tExample: \'%s -m 5 10 20 FCFS in.file\' invokes the program\
-		   with memory management enabled, instructing the program to dump\
-		   memory contents	to memoryDump.out at times 5, 10 and 20\n",
-		   progname);
+	puts("-m [PARAMETERS]\n\tFlags that memory management should be "\
+		 "enabled, and [PARAMETERS] should be a list of "\
+		 "space-separated numbers and a string out.file\n");
+	printf("\t\tExample: \'%s -m 5 10 20 FCFS in.file out.file\' \ninvokes the program "\
+		   "with memory management enabled, instructing the program to dump "\
+		   "memory contents to out.file at times 5, 10 and 20\n",progname);
 }
 
 int isint(char *str) {
