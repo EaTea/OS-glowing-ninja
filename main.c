@@ -39,6 +39,13 @@ int schedule(int flag,PROCESS *ps) {
   return 0;
 }
 
+static int cmpInts(const void* a1, const void* b1)
+{
+	int* a = (int*) a1;
+	int* b = (int*) b1;
+	return *a - *b;
+}
+
 int main(int argc, char *argv[]) {
   
   //Enable logging
@@ -52,6 +59,23 @@ int main(int argc, char *argv[]) {
     usage();
     exit(0);
   }
+	
+	if(!strcmp(*argv,"-m"))
+	{
+		memoryManage = 1;
+		nToDumps = 0;
+		timesToTakeDumps = NULL;
+		argv++;
+		while(isint(*argv))
+		{
+			nToDumps++;
+			timesToTakeDumps = realloc(timesToTakeDumps,nToDumps * sizeof(int));
+			timesToTakeDumps[nToDumps-1] = atoi(*argv);
+		}
+		qsort(timesToTakeDumps,nToDumps,sizeof(int),cmpInts);
+		if(nToDumps)
+			nextTimeToDumpIndex = 0;
+	}
   
   //Algorithm Parsing
   if (!strcmp(*argv,"FCFS")) {
@@ -96,7 +120,8 @@ int main(int argc, char *argv[]) {
     p->num = i+1;
   
   
-  
+  //TODO: change
+	memoryDumpStream = fopen("memDump.out","w");
   schedule(alg_flag,processes);
     
   fclose(logger);
