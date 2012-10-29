@@ -77,7 +77,6 @@ int findRunningTime(PROCESS *p) {
 	int rtime = p->nlines;
 	for (int i = 0; i < p->nifs; i++) {
 		IFLINE x = p->iflines[i];
-		fprintf(logger,"Looking at ifline %d\nGo from %d to %d a total of %d times\n",i,x.originline,x.gotoline,x.loopLimit);
 		rtime += (x.originline-x.gotoline+1)*x.loopLimit;
 	}
 	return rtime;
@@ -149,7 +148,9 @@ PROCESS *readFiles() {
 						//check for existence of ifline
 						if (findIfLine(pp,line,pp->nlines)) {
 							IFLINE *il = pp->iflines;
-							fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
+							fprintf(logger,"If-Line found at line %d: "\
+											"if %c < %d goto %d\n",il->originline, 
+											il->ifvar,il->loopLimit,il->gotoline);
 						}
 					}	
 				}
@@ -166,7 +167,8 @@ PROCESS *readFiles() {
 	pp = processes;
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
-			fprintf(logger,"Process %s has starttime %d and running time %d, with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
+			fprintf(logger,"Process %s has starttime %d and running time %d,"\
+					"with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
 	return processes;
 }
 

@@ -6,6 +6,7 @@ static const int cacheSize = 8;
 void initialiseMainMemory()
 {
 	//make the list contaiing all the frames
+	if (lf) fprintf(logger,"Initialising main memory\n");
 	mainMemoryList = newList();
 	for(int i = 0; i < cacheSize; i++)
 	{

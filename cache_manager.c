@@ -12,7 +12,7 @@ static char pgTwoPName[BUFSIZ];
 
 void initialiseCache()
 {
-	printf("Initialising cache\n");
+	if (lf) fprintf(logger,"Initialising cache\n");
 	//a magic value; this value is safe and represents that the cache contains nothing
 	pgOneStart = pgTwoStart = -4;
 	//the strlen will now be 0, so should be guaranteed to match no process' name

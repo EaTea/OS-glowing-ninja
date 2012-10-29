@@ -21,8 +21,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 	//if there is an IFLINE find it
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
 	int retVal = 0;
-	if (lf && inCache(p,*currentLine))
-		fprintf(logger,"Process is in cache!\n");
+
 	//if line in cache
 	if(!memoryManage || inCache(p, *currentLine))
 	{
@@ -119,6 +118,18 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			//keep on running a process until it's finished
 			//printf("Line:%d\n",p->curLine);
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
+			int tmpTime = timeSoFar + overallTime + max(timeConsumed,0);
+			if(nextTimeToDumpIndex < nToDumps && tmpTime >= timesToTakeDumps[nextTimeToDumpIndex])
+			{
+				if (lf)
+					fprintf(logger,"Taking time dump at time %d\n",
+							tmpTime);
+				dumpCacheToStream(memoryDumpStream);
+				dumpMainMemoryToStream(memoryDumpStream);
+				if(nextTimeToDumpIndex < nToDumps)
+					nextTimeToDumpIndex++;
+			}
+
 			if(timeConsumed < 0)
 			{
 				//page fault
@@ -136,21 +147,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				}
 			}
 			else
-			{
-				if (lf)
-					fprintf(logger,"Overall Time So Far:%d\n", overallTime);
 				overallTime += timeConsumed;
-			}
-			//TODO
-			//if memory dump should occur in between
-			if(nextTimeToDumpIndex < nToDumps && timeSoFar+overallTime >= timesToTakeDumps[nextTimeToDumpIndex])
-			{
-				dumpCacheToStream(memoryDumpStream);
-				dumpMainMemoryToStream(memoryDumpStream);
-				if(nextTimeToDumpIndex < nToDumps)
-					nextTimeToDumpIndex++;
-			}
-
 		}
 	}
 	else
@@ -159,29 +156,32 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 		while(overallTime < timeslice && p->curLine <= p->nlines)
 		{
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice-overallTime);
+			//if we need to take a dump and put it into the stream
+			int tmpTime = timeSoFar + overallTime + max(timeConsumed,0);
+			if(nextTimeToDumpIndex < nToDumps && tmpTime >= timesToTakeDumps[nextTimeToDumpIndex])
+			{
+				if (lf)
+					fprintf(logger,"Taking time dump at time %d\n",
+							tmpTime);
+				dumpCacheToStream(memoryDumpStream);
+				dumpMainMemoryToStream(memoryDumpStream);
+				if(nextTimeToDumpIndex < nToDumps)
+					nextTimeToDumpIndex++;
+			}
 			if(timeConsumed < 1)
 			{
 				//page fault
 				if(timeConsumed == -1)
 				{
 					if (lf)
-						printf("Page Fault; missing the first 2 lines\n");
+						fprintf(logger,"Page Fault; missing the first 2 lines\n");
 					loadIntoMainMemory(p,p->curLine);
 				}
 				else if(timeConsumed == -2)
 				{
 					if (lf)
-						printf("Page Fault; missing the last 2 lines\n");
+						fprintf(logger,"Page Fault; missing the last 2 lines\n");
 					loadIntoMainMemory(p,p->curLine+2);
-				}
-
-				//if we need to take a dump and put it into the stream
-				if(nextTimeToDumpIndex < nToDumps && timeSoFar+overallTime >= timesToTakeDumps[nextTimeToDumpIndex])
-				{
-					dumpCacheToStream(memoryDumpStream);
-					dumpMainMemoryToStream(memoryDumpStream);
-					if(nextTimeToDumpIndex < nToDumps)
-						nextTimeToDumpIndex++;
 				}
 				//in this case, the processLine function has returned 0
 				//OR

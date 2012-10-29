@@ -29,8 +29,9 @@ void rr_algorithm(PROCESS* processes, int tq)
 		while (i < nfiles && pp->stime <= timeSoFar) {
 			
 			enqueue(&q,pp);
-			printf("Time is %d, enqueuing process %d with stime %d\n", 
-				   timeSoFar,pp->num,pp->stime);
+			if (lf) 
+					fprintf(logger,"Time is %d, enqueuing process %d with " \
+							"start time %d\n", timeSoFar, pp->num, pp->stime);
 			pp++; i++;
 		}
 		
@@ -54,7 +55,8 @@ void rr_algorithm(PROCESS* processes, int tq)
 		//f->durationTimeSlots = (int*)realloc(f->durationTimeSlots, (f->nTimeSlots)*sizeof(int));
 		//(f->scheduledTimeSlots)[f->nTimeSlots-1] = timeSoFar;
 	
-		printf("Working with Process %d..\n",f->num);
+		if (lf)
+			fprintf(logger,"Working with Process %s.\n",f->pname);
 		int diff = runProcessInTimeSlice(f, tq);
 		//(f->durationTimeSlots)[f->nTimeSlots-1] = diff;
 		timeSoFar += diff;
@@ -75,6 +77,6 @@ void rr_algorithm(PROCESS* processes, int tq)
 		}*/
 		
 	}
-	printf("Scheduling finish time: %d\n",timeSoFar);
+	fprintf(logger,"Scheduling finish time: %d\n",timeSoFar);
 	
 }
