@@ -16,3 +16,5 @@ clean:
 	echo "Removing all object files and the project executable in build directory"
 	rm -f $(PROJ)
 	rm -f *.o
+	rm -f *.log
+	rm -f *.out
