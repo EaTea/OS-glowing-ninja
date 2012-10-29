@@ -39,3 +39,8 @@ void enqueue(QUEUE *q, PROCESS *p) {
 }
 
 //TODO: Make a free queue function
+void destroy(QUEUE* q)
+{
+	free(q->els);
+	free(q);
+}

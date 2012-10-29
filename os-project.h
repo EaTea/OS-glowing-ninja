@@ -303,6 +303,12 @@ extern void loadIntoMainMemory(PROCESS*,int);
 	 */
 extern void updateMainMemory(FRAME*);
 
+/*
+	Destroys the memory associated with storing an array of processes
+	Accepts the pointer to the array of processes and the number of processes in the array
+ */
+extern void clearProcesses(PROCESS*, int);
+
 
 
 /**QUEUE**/
@@ -357,6 +363,13 @@ extern int is_empty(QUEUE*);
 	full, and 0 otherwise
 	 */
 extern int is_full(QUEUE*);
+
+/*
+	Frees the memory allocated to the QUEUE
+	Accepts the QUEUE pointer to destroy
+	N.B.: It does NOT free the underlying elements of the QUEUE, only the space allocated for their pointers
+	*/
+extern void destroy(QUEUE*);
 
 /**LIST**/
 /**Definition of a Doubly linked list*/

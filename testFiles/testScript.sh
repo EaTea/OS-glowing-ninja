@@ -11,11 +11,11 @@ for i in *.jobs
 		for k in $@
 		do
 		echo "Time Quantum: $k"
-		../build/os-project RR $k $i
-		../build/os-project -m 10 20 30 RR $k $i
+		../build/os-project RR $k $i memDump.out
+		../build/os-project -m 10 20 30 RR $k $i memDump.out
 	done
 	echo "FCFS: First Come First Serve Scheduling Algorithm"
-	../build/os-project -m 5 10 20 FCFS $i
+	../build/os-project -m 5 10 20 FCFS $i memDump.out
 done
 mv program.log ../logs/$(date '+%F-%T')-program.log
 echo "The .log file has been moved to ../logs."

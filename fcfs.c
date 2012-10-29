@@ -12,7 +12,7 @@ void fcfs_algorithm(PROCESS* processes)
 		{
 			if (lf)
 				fprintf(logger,"Taking time dump at time %d\n",
-						tmpTime);
+						timesToTakeDumps[nextTimeToDumpIndex]);
 			dumpCacheToStream(memoryDumpStream);
 			dumpMainMemoryToStream(memoryDumpStream);
 			nextTimeToDumpIndex++;

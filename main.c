@@ -18,6 +18,7 @@ int schedule(int flag,PROCESS *ps) {
   
   if (lf) fprintf(logger,"Scheduling complete.\n");
   print_schedule(ps);
+	clearProcesses(ps,nfiles);
 
 	//if memory management requested, destroy the cache
 	if(memoryManage)

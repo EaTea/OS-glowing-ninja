@@ -36,7 +36,7 @@ void rr_algorithm(PROCESS* processes, int tq)
 			{
 				if (lf)
 					fprintf(logger,"Taking time dump at time %d\n",
-							tmpTime);
+							timesToTakeDumps[nextTimeToDumpIndex] <= timeSoFar);
 				dumpCacheToStream(memoryDumpStream);
 				dumpMainMemoryToStream(memoryDumpStream);
 				nextTimeToDumpIndex++;
@@ -76,6 +76,7 @@ void rr_algorithm(PROCESS* processes, int tq)
 			//enqueue the file
 			enqueue(q,f);
 	}
+	destroy(q);
 	fprintf(logger,"Scheduling finish time: %d\n",timeSoFar);
 	
 }

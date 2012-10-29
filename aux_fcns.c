@@ -72,3 +72,22 @@ void print_schedule(PROCESS *ps) {
 		printf("\n");
 	}
 }
+
+/*	Clears the memory associated with storing a process
+ *	To the sweet, sweet sound of PSY's Gangnam Style
+ *	http://www.youtube.com/watch?v=9bZkp7q19f0
+ */
+void clearProcesses(PROCESS* ps, int n)
+{
+	if(lf) fprintf(logger,"Freeing %d files\n",n);
+	for (int y = 0; y < n; y++) {
+		//HEEEEY SEXY LADY
+		free(ps[y].pname);
+		//OP OP
+		free(ps[y].scheduledTimeSlots);
+		//OP OP
+		free(ps[y].durationTimeSlots);
+		//OPPA GANGNAM STYLE
+		free(ps[y].iflines);
+	}
+}
