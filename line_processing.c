@@ -31,6 +31,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 			//relies on lazy evaluation
 			if(iflineIndex == -1 || iflines[iflineIndex].looped >= iflines[iflineIndex].loopLimit)
 				(*currentLine)++;
+			//an IFLINE! jump to the right place and increment loop counter
 			else
 			{
 				*currentLine = iflines[iflineIndex].gotoline;
@@ -55,7 +56,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 		//one page is required iff we are loading the last or second last lines
 		if(foundLine && foundLine2)
 		{
-			//sufficient time to move to cache
+			//sufficient time to move to cache and run
 			if((timeRemaining == -1 || timeRemaining >= 2))
 			{ 
 				//current line not inside the cache; load into cache
@@ -82,7 +83,7 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 				return 0;
 			}
 		}
-		//not in main memory; page fault
+		//not in main memory or cache; page fault
 		else
 		{
 			//page fault!
@@ -113,21 +114,19 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 		if (lf) fprintf(logger,"Active process: %s\n",p->pname);
 		while(p->curLine <= p->nlines)
 		{
-			//printf("%s\n", p->pname);
-			//printf("%d, %d\n", p->curLine, p->nlines);
-			//keep on running a process until it's finished
-			//printf("Line:%d\n",p->curLine);
+			//time consumed
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice);
+			//the total time taking into account how long this has run + the time consumed in processing the line above
 			int tmpTime = timeSoFar + overallTime + max(timeConsumed,0);
-			if(nextTimeToDumpIndex < nToDumps && tmpTime >= timesToTakeDumps[nextTimeToDumpIndex])
+			//should dump
+			while(nextTimeToDumpIndex < nToDumps && tmpTime > timesToTakeDumps[nextTimeToDumpIndex])
 			{
 				if (lf)
 					fprintf(logger,"Taking time dump at time %d\n",
 							tmpTime);
 				dumpCacheToStream(memoryDumpStream);
 				dumpMainMemoryToStream(memoryDumpStream);
-				if(nextTimeToDumpIndex < nToDumps)
-					nextTimeToDumpIndex++;
+				nextTimeToDumpIndex++;
 			}
 
 			if(timeConsumed < 0)
@@ -160,15 +159,14 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			int timeConsumed = processLine(p, &(p->curLine), p->nifs, timeslice-overallTime);
 			//if we need to take a dump and put it into the stream
 			int tmpTime = timeSoFar + overallTime + max(timeConsumed,0);
-			if(nextTimeToDumpIndex < nToDumps && tmpTime >= timesToTakeDumps[nextTimeToDumpIndex])
+			while(nextTimeToDumpIndex < nToDumps && tmpTime > timesToTakeDumps[nextTimeToDumpIndex])
 			{
 				if (lf)
 					fprintf(logger,"Taking time dump at time %d\n",
 							tmpTime);
 				dumpCacheToStream(memoryDumpStream);
 				dumpMainMemoryToStream(memoryDumpStream);
-				if(nextTimeToDumpIndex < nToDumps)
-					nextTimeToDumpIndex++;
+				nextTimeToDumpIndex++;
 			}
 			if(timeConsumed < 1)
 			{
@@ -195,9 +193,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 			overallTime += timeConsumed;
 		}
 	}
-	//TODO: Add in that scheduled time slots is updated
-	//TODO: Verify this worked
-	//NB: Pretty sure it does!!
+	//reallocate and increase the scheduled slots
 	(p->nTimeSlots)++;
 	p->scheduledTimeSlots = (int*)realloc(p->scheduledTimeSlots, p->nTimeSlots * sizeof(int));
 	p->durationTimeSlots = (int*)realloc(p->durationTimeSlots, p->nTimeSlots * sizeof(int));

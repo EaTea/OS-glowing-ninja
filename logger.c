@@ -24,14 +24,17 @@ void newLogSession()
 	fprintf(logger, "TIME: %s\n", asctime(ptm));
 }
 
-void setupMemoryDump()
+void setupMemoryDump(char* fileName)
 {
-	//TODO: Implement this to write to a file
-	memoryDumpStream = stdout;
+	memoryDumpStream = fopen(fileName,"w");
+	if(memoryDumpStream == NULL)
+	{
+		fputs("Error: Could not open memory dump location\n",stderr);
+	}
 }
 
 void tearDownMemoryDump()
 {
-	//TODO: close the file stream
+	fclose(memoryDumpStream);
 	return;
 }

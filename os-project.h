@@ -214,12 +214,6 @@ extern void setupLogging();
 extern void newLogSession();
 
 /*
- * TODO: I believe this will end up becoming deprecated.
- * Computes the running time of a single PROCESS data structure
- */
-extern void computeProcessRunTime(PROCESS*);
-
-/*
  * Processes a single line of a process
  * Accepts the location of the process in memory and the line count that it is up to at the moment, and the number of if lines, and the amount of time remaining
  * If this amount is less than 0, there is no limit; otherwise, the time consumed is always less than the time remaining
@@ -279,7 +273,7 @@ extern void tearDownCache();
 /*
 	 Sets up the memory dump stream
 	*/
-extern void setupMemoryDump();
+extern void setupMemoryDump(char*);
 
 /*
 	 Closes the memory dump stream

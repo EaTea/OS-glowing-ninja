@@ -2,11 +2,14 @@
 #include <strings.h>
 
 int schedule(int flag,PROCESS *ps) {
+	//if memory management requested, make the cache
 	if(memoryManage)
 	{
+		//initialise main memory and cache
 		initialiseMainMemory();
 		initialiseCache();
 	}
+	//depending on which algorithm, do awesomeness
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
@@ -16,6 +19,7 @@ int schedule(int flag,PROCESS *ps) {
   if (lf) fprintf(logger,"Scheduling complete.\n");
   print_schedule(ps);
 
+	//if memory management requested, destroy the cache
 	if(memoryManage)
 	{
 		tearDownCache();
@@ -25,8 +29,10 @@ int schedule(int flag,PROCESS *ps) {
   return 0;
 }
 
+//static comparator for comparing integers
 static int cmpInts(const void* a1, const void* b1)
 {
+	//see qsort's man pages for more information
 	int* a = (int*) a1;
 	int* b = (int*) b1;
 	return *a - *b;
@@ -99,6 +105,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < nfiles; i++,p++)
       fprintf(logger,"Process %d: Start time %d\n",i,p->stime);
   }
+	argv++;
   
   //Order by start time and number.
   qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime); 
@@ -106,11 +113,16 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < nfiles; i++,p++)
     p->num = i+1;
   
-  
-  //TODO: change
-	memoryDumpStream = fopen("memDump.out","w");
+	if(memoryManage)
+	{
+		setupMemoryDump(*argv);
+	}
   schedule(alg_flag,processes);
     
   fclose(logger);
+	if(memoryManage)
+	{
+		tearDownMemoryDump();
+	}
   return 0;
 }

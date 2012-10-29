@@ -23,6 +23,7 @@ void usage() {
 
 int isint(char *str) {
   while (*str) {
+		//note: negative numbers are not accounted for
     if (!isdigit(*str)) return 0;
     else str++;
   } return 1;
@@ -30,6 +31,7 @@ int isint(char *str) {
 
 int cmpByStartTime(const void* a, const void* b)
 {
+	//comparator for a qsort; see qsort's man page for more information
 	PROCESS* elem1 = (PROCESS*) a;
 	PROCESS* elem2 = (PROCESS*) b;
 	return elem1->stime - elem2->stime;
@@ -43,20 +45,6 @@ int max(int a, int b)
 int min(int a, int b)
 {
 	return a < b ? a : b;
-}
-
-void computeProcessRunTime(PROCESS* p)
-{
-	int runTime = 0;
-	int nLines = p->nlines;
-	int nIfs = p->nifs;
-	runTime += nLines;
-	for(int ifCount = 0; ifCount < nIfs; ifCount++)
-	{
-		IFLINE* ifIterator = p->iflines+ifCount;
-		runTime += ifIterator->loopLimit * (ifIterator->originline - ifIterator->gotoline + 1);
-	}
-	p->runningTime = runTime;
 }
 
 /*	Prints the process schedule to Stdout 

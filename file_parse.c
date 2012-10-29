@@ -117,7 +117,7 @@ PROCESS *readFiles() {
 				} else {
 				trimLine(line);
 				if (isint(line)) {
-					pp->pname = malloc(strlen(*fparse)+1);
+					pp->pname = calloc(sizeof(char),strlen(*fparse)+1);
 					strcpy(pp->pname,*fparse);
 					//file is valid and has a start time at the beginning
 					pp->stime = strtol(line,NULL,10);

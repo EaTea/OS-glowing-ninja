@@ -15,7 +15,6 @@ void rr_algorithm(PROCESS* processes, int tq)
 	++i;
 	++pp;
 	
-	
 	while (i < nfiles || !is_empty(q)) {
 		
 		//Start of a quantum cycle
@@ -32,6 +31,16 @@ void rr_algorithm(PROCESS* processes, int tq)
 		//IF there are no elements currently in the queue to process, we 
 		//should advance to the start of the next available process.
 		if (is_empty(q)) {
+			
+			while(nextTimeToDumpIndex < nToDumps && timesToTakeDumps[nextTimeToDumpIndex] <= timeSoFar)
+			{
+				if (lf)
+					fprintf(logger,"Taking time dump at time %d\n",
+							tmpTime);
+				dumpCacheToStream(memoryDumpStream);
+				dumpMainMemoryToStream(memoryDumpStream);
+				nextTimeToDumpIndex++;
+			}
 			timeSoFar = pp->stime;
 			continue;
 		}
@@ -49,10 +58,11 @@ void rr_algorithm(PROCESS* processes, int tq)
 			if (lf)
 				fprintf(logger,"Once off load into main memory; first 4 lines\n");
 			
-			loadIntoMainMemory(pp,1);
+			//load to memory first four lines
+			loadIntoMainMemory(f,1);
 			if(pp->nlines >= 3)
 			{
-				loadIntoMainMemory(pp,3);
+				loadIntoMainMemory(f,3);
 			}
 		}
 
@@ -61,22 +71,10 @@ void rr_algorithm(PROCESS* processes, int tq)
 		int diff = runProcessInTimeSlice(f, tq);
 		//(f->durationTimeSlots)[f->nTimeSlots-1] = diff;
 		timeSoFar += diff;
-		//check if finished?
+		//check if finished
 		if(f->curLine <= f->nlines)
 			//enqueue the file
 			enqueue(q,f);
-		/*if ((diff = f->runningTime-f->currtime) <= tq) {
-			printf("We could finish this now! Diff = %d :)\n",diff);
-			timeSoFar += diff;
-			f->currtime += diff;
-			printf("Current time is now suddenly %d\n",timeSoFar);
-		} else {
-			printf("Not ready to finish yet :(\n");
-			f->currtime += tq;
-			timeSoFar += tq;
-			enqueue(&q,f);
-		}*/
-		
 	}
 	fprintf(logger,"Scheduling finish time: %d\n",timeSoFar);
 	
