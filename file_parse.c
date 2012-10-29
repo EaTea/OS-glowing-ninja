@@ -147,10 +147,10 @@ PROCESS *readFiles() {
 						strcpy((pp->lines)[pp->nlines-1], line);
 						//check for existence of ifline
 						if (findIfLine(pp,line,pp->nlines)) {
-							IFLINE *il = pp->iflines;
+							IFLINE il = (pp->iflines)[pp->nifs - 1];
 							fprintf(logger,"If-Line found at line %d: "\
-											"if %c < %d goto %d\n",il->originline, 
-											il->ifvar,il->loopLimit,il->gotoline);
+											"if %c < %d goto %d\n",il.originline, 
+											il.ifvar,il.loopLimit,il.gotoline);
 						}
 					}	
 				}
@@ -167,8 +167,8 @@ PROCESS *readFiles() {
 	pp = processes;
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
-			fprintf(logger,"Process %s has starttime %d and running time %d,"\
-					"with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
+			fprintf(logger,"Process %s has starttime %d and %d if-lines\n",
+					files[i],pp->stime,pp->nifs);
 	return processes;
 }
 

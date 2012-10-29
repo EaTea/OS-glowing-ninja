@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
       usage(); 
       exit(0); 
     }
-    if (lf) fprintf(stderr,"%d\n",time_quant);
+    if (lf) fprintf(logger,"Time Quantum: %d\n",time_quant);
     argv++;
   }
   

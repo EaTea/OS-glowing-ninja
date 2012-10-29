@@ -8,13 +8,7 @@ void rr_algorithm(PROCESS* processes, int tq)
 	timeSoFar = processes->stime;
 	PROCESS *f = NULL; //the current front process
 	PROCESS *pp = processes;
-	//Allocate memory for scheduled time slots for each process
-	//TODO: Move this to dynamically reallocate as we do not know the amount 
-	//of timeslots at runtime.
-	/*for (i = 0; i < nfiles; i++,pp++) {
-		int nSlots = (pp->runningTime+1)/tq;
-		pp->scheduledTimeSlots = malloc(nSlots*sizeof(int));
-	}*/
+
 	int i = 0;
 	pp = processes;
 	enqueue(q,pp);
@@ -47,7 +41,21 @@ void rr_algorithm(PROCESS* processes, int tq)
 		
 		//dequeue front element, and continue to process.
 		f = dequeue(q);
-		
+		if (memoryManage && f->nTimeSlots == 0) {
+			if (lf) 
+				fprintf(logger,"Starting process %d, at time %d\n",
+						i,timeSoFar);
+			//run this process to completion
+			if (lf)
+				fprintf(logger,"Once off load into main memory; first 4 lines\n");
+			
+			loadIntoMainMemory(pp,1);
+			if(pp->nlines >= 3)
+			{
+				loadIntoMainMemory(pp,3);
+			}
+		}
+
 		if (lf)
 			fprintf(logger,"Working with Process %s.\n",f->pname);
 		int diff = runProcessInTimeSlice(f, tq);
