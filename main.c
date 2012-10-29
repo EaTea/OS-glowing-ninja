@@ -20,6 +20,16 @@ int schedule(int flag,PROCESS *ps) {
   print_schedule(ps);
 	clearProcesses(ps,nfiles);
 
+	while(nextTimeToDumpIndex < nToDumps)
+	{
+		if (lf)
+			fprintf(logger,"Taking time dump at time %d\n",
+					timesToTakeDumps[nextTimeToDumpIndex]);
+		dumpCacheToStream(memoryDumpStream);
+		dumpMainMemoryToStream(memoryDumpStream);
+		nextTimeToDumpIndex++;
+	}
+
 	//if memory management requested, destroy the cache
 	if(memoryManage)
 	{

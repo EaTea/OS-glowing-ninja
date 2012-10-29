@@ -55,6 +55,7 @@ static void recursiveDumpToStream(FILE* stream, FRAME* f, int fnumber)
 } 
 void dumpMainMemoryToStream(FILE* stream)
 {
+	fprintf(stream, "Time: %d\n", timesToTakeDumps[nextTimeToDumpIndex]);
 	recursiveDumpToStream(stream,mainMemoryList->first,1);
 }
 
@@ -100,5 +101,4 @@ int inMainMemory(PROCESS* p, int currentLine, FRAME** f)
 	//f2.page[0] = currentLine+2
 	//f2.page[1] = currentLine+3
 	return isInList(mainMemoryList,p->pname,currentLine,f);
-	//leverage knowledge that cache is always of size 8
 }

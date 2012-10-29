@@ -86,6 +86,7 @@ void loadIntoCache(FRAME* f1, FRAME* f2)
 
 void dumpCacheToStream(FILE* stream)
 {
+	fprintf(stream, "Time: %d\n", timesToTakeDumps[nextTimeToDumpIndex]);
 	fprintf(stream, "Cache: Page One\nProcess Cached: %s\n",pgOnePName);
 	fprintf(stream, "%s\n%s\n", pageOne[0], pageOne[1]);
 	fprintf(stream, "Cache: Page Two\nProcess Cached: %s\n",pgTwoPName);

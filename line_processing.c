@@ -6,20 +6,13 @@
  * Returns the index number in the IFLINEs array corresponding to the IFLINE on currentLine, or -1 if no such IFLINE exists
  */
 static int IFLINESearch(IFLINE* iflines, int currentLine, int nIfs)
-{	//TODO: make a binary search
-	int l = 0, h = nIfs-1, m;
-	
-	while (h - l < 1) {
-// 		puts("Good luck with your binary");
-		m = (h-l)/2;
-// 		printf("h=%d,m=%d,l=%d\n",h,m,l);
-		if (iflines[m].originline == currentLine) return m;
-		else if (iflines[m].originline > currentLine) h = m;
-		else l = m;
-	} 
-	if (iflines[l].originline == currentLine) return l;
-	if (iflines[h].originline == currentLine) return h;
-	else return -1;
+{	
+	for(int i = 0; i < nIfs; i++)
+	{
+		if(currentLine == iflines[i].originline)
+			return i;
+	}
+	return -1;
 }
 
 int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)

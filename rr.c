@@ -60,8 +60,9 @@ void rr_algorithm(PROCESS* processes, int tq)
 			
 			//load to memory first four lines
 			loadIntoMainMemory(f,1);
-			if(pp->nlines >= 3)
+			if(f->nlines >= 3)
 			{
+				fprintf(logger, "Once off load into main memory; last 2 lines\n");
 				loadIntoMainMemory(f,3);
 			}
 		}
