@@ -333,15 +333,15 @@ typedef struct q {
 	Accepts the size of the array to construct
 	Please don't use a size 0 or less
 	*/
-extern QUEUE new_queue(int);
+extern QUEUE* new_queue(int);
 /*
 	return the process at the front of the queue specified by QUEUE
 	*/
-extern PROCESS *front(QUEUE);
+extern PROCESS *front(QUEUE*);
 extern PROCESS *dequeue(QUEUE*);
 extern void enqueue(QUEUE*, PROCESS*);
-extern int is_empty(QUEUE);
-extern int is_full(QUEUE);
+extern int is_empty(QUEUE*);
+extern int is_full(QUEUE*);
 
 /**LIST**/
 /**Definition of a Doubly linked list using a window*/
