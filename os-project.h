@@ -45,14 +45,39 @@ typedef struct {
 	int* scheduledTimeSlots;
 	//duration of each time slot
 	int* durationTimeSlots;
+
+	//actual lines
+	char **lines;
 } PROCESS;
 
-extern char *progname;
+/**
+	Frame definition for Main Memory
+*/
+typedef struct frame {
+	char pname[BUFSIZ];
+	int lineStart;
+	char **page;
+	struct frame* next;
+	struct frame* previous;
+} FRAME;
+FRAME* newFrame();
+void recursiveDestroyFrame(FRAME*);
+
+
+extern char *progname; //Program name - used in errors
+
+
 
 /*
  * Prints program usage message to standard output stream.
  */
 extern void usage();
+
+/*
+ * Prints computed schedule to standard output stream
+ */
+extern void print_schedule(PROCESS*); 
+
 
 /*
  * Returns whether a given char* is an integer; that is, does the given char*
@@ -65,6 +90,11 @@ extern int isint(char*);
 
 extern void fcfs_algorithm(PROCESS*);
 
+/*
+ * Simulates a Round-Robin scheduling on an array of PROCESSes.
+ * Accepts a array of PROCESSes that has been sorted by starting time and an integer time quantum.
+ * N.B.: as the time quantum approaches 0, interesting behaviour can occur.
+ */
 extern void rr_algorithm(PROCESS*,int);
 
 /*
@@ -99,12 +129,15 @@ extern int time_quant;
 extern int nfiles;
 extern int timeSoFar;
 extern int memoryManage;
+extern const char* NO_VALUE;
+
+extern int* timesToTakeDumps;
+extern int nToDumps;
+extern int nextTimeToDumpIndex;
 
 extern FILE *logger;
+extern FILE *memoryDumpStream;
 extern int lf;
-
-extern int cacheStart;
-extern char cacheProcessName[BUFSIZ];
 
 /*
  * Opens the logging stream and sets the log flag, otherwise prints an error.
@@ -149,15 +182,55 @@ extern int runProcessInTimeSlice(PROCESS*, int);
 extern int inCache(PROCESS*, int);
 /*
  * Checks if a line is inside the main memory 
- * Accepts the PROCESS location inside memory and line number (indexed from 1)
- * Returns a nonzero value iff the line number passed has been loaded into the main memory
+ * Accepts the PROCESS location inside memory and line number (indexed from 1), and the FRAME location which (will) contain the line
+ * Returns a nonzero value iff the line number passed has been loaded into the main memory and through pass-by-reference the FRAME which contains this line
+ * N.B.: A frame contains a line l iff the first line of the frame's page is l, and the second line of the frame's page is l+1
  */
-extern int inMainMemory(PROCESS*, int);
+extern int inMainMemory(PROCESS*, int, FRAME**);
 /*
  * Loads the line of a PROCESS, and the 3 subsequent lines into cache
  * Accepts the PROCESS to load, and the line number to load
  */
-extern void loadIntoCache(PROCESS*, int);
+extern void loadIntoCache(FRAME*,FRAME*);
+
+/*
+	 Dumps the cache to a stream specified by a FILE*
+	 Accepts the stream to write to; assumes without checking that thisstream can be written to
+	*/
+extern void dumpCacheToStream(FILE*);
+/*
+	 Dumps the main memory contents to a stream specified by a FILE*
+	 Accepts the stream to write to; assumes without checking that thisstream can be written to
+	*/
+extern void dumpMainMemoryToStream(FILE*);
+
+/*
+	 Initialise the cache using dynamic memory allocation
+	 Call at the beginning of the program invocation or the cache simulation is not guaranteed to work as expected
+	*/
+extern void initialiseCache();
+/*
+	 Free any dynamic memory allocated to the cache
+	*/
+extern void tearDownCache();
+
+/*
+	 Sets up the memory dump stream
+	*/
+extern void setupMemoryDump();
+
+/*
+	 Closes the memory dump stream
+	*/
+extern void tearDownMemoryDump();
+
+extern void initialiseMainMemory();
+
+extern void tearDownMainMemory();
+
+extern void loadIntoMainMemory(PROCESS*,int);
+
+extern void updateMainMemory(FRAME*);
 
 
 
@@ -176,3 +249,18 @@ extern PROCESS *dequeue(QUEUE*);
 extern void enqueue(QUEUE*, PROCESS*);
 extern int is_empty(QUEUE);
 extern int is_full(QUEUE);
+
+/**LIST**/
+/**Definition of a Doubly linked list using a window*/
+typedef struct l
+{
+	FRAME* first;
+	FRAME* last;
+	int size;
+} FRAME_LIST;
+
+FRAME_LIST* newList();
+void appendToList(FRAME_LIST*,FRAME*);
+int isInList(FRAME_LIST*,char*,int,FRAME**);
+void bringElementToFront(FRAME_LIST*,FRAME*);
+void destroyList(FRAME_LIST*);

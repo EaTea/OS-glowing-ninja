@@ -9,7 +9,11 @@ int lf;
 FILE *logger = NULL;
 int timeSoFar = 0;
 int memoryManage;
+PROCESS* processList = NULL;
 
-//cache constants
-int cacheStart = -4;
-char cacheProcessName[BUFSIZ];
+FILE* memoryDumpStream = NULL;
+const char* NO_VALUE = "<<NO LINE STORED>>";
+
+int* timesToTakeDumps = NULL;
+int nToDumps;
+int nextTimeToDumpIndex;

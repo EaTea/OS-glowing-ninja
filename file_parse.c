@@ -1,7 +1,7 @@
 #include "os-project.h"
 #include <regex.h>
 
-//Nic's awesome regular expression - We deserve bonus marks for this
+//Nic's awesome regular expression - We deserve bonus marks for this :)
 //Matches "if i < 3 i = i+1 goto 4" with arbitrary whitespace -- Can
 //Also be case-insensitive depending on how regcomp calls it.
 const char *PATTERN =
@@ -46,7 +46,7 @@ int findIfLine(PROCESS *p, char *line, int ln) {
 		//loop variable
 		il->ifvar = tolower(line[(int)m[1].rm_so]);
 		
-		char numbs[10], numbs2[10];
+		char numbs[10] = "", numbs2[10] = "";
 		
 		//loop Limit variable
 		int s = (int)m[2].rm_so, e = (int)m[2].rm_eo;
@@ -73,19 +73,11 @@ int findIfLine(PROCESS *p, char *line, int ln) {
 /* Free compiled regular expression if you want to use the regex_t again */
 	return -1;
 }
-/*
-int findRunningTime(FILE *fp) {
-	//TODO: Use this function if we need to actually parse the FILE. Otherwise
-	//		use the overloaded version
-	return 0;	
-}*/
 
 int findRunningTime(PROCESS *p) {
 	int rtime = p->nlines;
-	fprintf(logger,"nifs = %d",p->nifs);
 	for (int i = 0; i < p->nifs; i++) {
 		IFLINE x = p->iflines[i];
-		fprintf(logger,"Looking at ifline %d\nGo from %d to %d a total of %d times\n",i,x.originline,x.gotoline,x.loopLimit);
 		rtime += (x.originline-x.gotoline+1)*x.loopLimit;
 	}
 	return rtime;
@@ -94,11 +86,11 @@ int findRunningTime(PROCESS *p) {
 /**This reads each file that in.file actually contains, one by one, and stores them in a struct*/
 PROCESS *readFiles() {
 	if (lf)
-		fprintf(logger,"%d files\n",nfiles);
+		fprintf(logger,"Job has %d files\n",nfiles);
 	PROCESS *processes = malloc(nfiles*sizeof(PROCESS));
 	if (files == NULL) {
 		perror("Cannot allocate to processes");
-		exit(0);
+		exit(1);
 	}
 
 	FILE *fp;
@@ -113,7 +105,7 @@ PROCESS *readFiles() {
 			sprintf(error,"Cannot open %s",*files);
 			fprintf(logger, "Fatal Error: %s\n", error);
 			perror(error);
-			exit(0); //Exit if reading file fails -- MAY NOT BE THE CASE!
+			exit(1); //Exit if reading file fails -- MAY NOT BE THE CASE!
 
 		} else {
 
@@ -138,21 +130,28 @@ PROCESS *readFiles() {
 					pp->scheduledTimeSlots = (int*) NULL;
 					pp->durationTimeSlots = (int*) NULL;
 					pp->nTimeSlots = 0;
+					pp->lines = (char**) NULL;
 				} else {
 					fprintf(stderr,"Start time missing from %s\n",*fparse);
 					fprintf(logger, "Fatal Error: Start time missing from %s\n",*fparse);
-					//TODO: should this be exit(0)? or exit(1)?
-					exit(0);
+					exit(1);
 				}
 			
-				while (INFILE(fp)) { //Read rest of doc.
+				while (INFILE(fp)) { //Read rest of proc.
 					if (fgets(line,sizeof line,fp) != NULL) {
 						trimLine(line);
 						++(pp->nlines);
+						pp->lines = (char**)realloc(pp->lines, pp->nlines * (sizeof(char*)));
+						//explictly initialise pointer to NULL to avoid memory referential issues
+						(pp->lines)[pp->nlines-1] = (char*) NULL;
+						(pp->lines)[pp->nlines-1] = malloc((strlen(line) + 1) * sizeof(char));
+						strcpy((pp->lines)[pp->nlines-1], line);
 						//check for existence of ifline
 						if (findIfLine(pp,line,pp->nlines)) {
-							IFLINE *il = pp->iflines;
-							fprintf(logger,"line %d: if %c < %d goto %d\n",il->originline, il->ifvar,il->loopLimit,il->gotoline);
+							IFLINE il = (pp->iflines)[pp->nifs - 1];
+							fprintf(logger,"If-Line found at line %d: "\
+											"if %c < %d goto %d\n",il.originline, 
+											il.ifvar,il.loopLimit,il.gotoline);
 						}
 					}	
 				}
@@ -169,7 +168,8 @@ PROCESS *readFiles() {
 	pp = processes;
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
-			fprintf(logger,"Process %s has starttime %d and running time %d, with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
+			fprintf(logger,"Process %s has starttime %d and %d if-lines\n",
+					files[i],pp->stime,pp->nifs);
 	return processes;
 }
 
@@ -205,7 +205,6 @@ PROCESS *parseFiles(char *fname) {
 			strcpy(files[nfiles],line);
 			++nfiles;
 		}
-		//realloc(files,(nfiles+1)*sizeof(char*)); //NOT SURE IF THIS LINE SHOULD BE THERE -- COULD CAUSE PROBLEMS!
 	}
 	fclose(fp);
 	

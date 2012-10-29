@@ -1,22 +1,35 @@
 #include "os-project.h"
+#include <strings.h>
 
 int schedule(int flag,PROCESS *ps) {
+	//if(memoryManage)
+	//{
+		initialiseMainMemory();
+		initialiseCache();
+	//}
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
-    default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(0); break;
+    default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(1); break;
   }
   
-  fprintf(logger,"Scheduling complete. Result of Schedule:\n");
-  //TODO: Move to print_schedule fn in auxfns.c
-  for (int i = 0; i < nfiles; i++) {
-	printf("%s:\t",ps[i].pname);
-	for (int j = 0; j < ps[i].nTimeSlots; j++) {
-		printf("%d\t",ps[i].scheduledTimeSlots[j]);
-		printf("%d\t",ps[i].durationTimeSlots[j]);
-	} printf("\n");
-  }
+  if (lf) fprintf(logger,"Scheduling complete.\n");
+  print_schedule(ps);
+
+	//if(memoryManage)
+	//{
+		tearDownCache();
+		tearDownMainMemory();
+	//}
+	
   return 0;
+}
+
+static int cmpInts(const void* a1, const void* b1)
+{
+	int* a = (int*) a1;
+	int* b = (int*) b1;
+	return *a - *b;
 }
 
 int main(int argc, char *argv[]) {
@@ -27,16 +40,34 @@ int main(int argc, char *argv[]) {
 	newLogSession();
   progname = *argv;
   argc--; argv++; //Skip progname
-  if (argc > 3 || argc < 2) {
+  if (argc < 2) {
     fputs("ERROR: Invalid arguments\n",stderr);
     usage();
     exit(0);
   }
+	
+	if(!strcmp(*argv,"-m"))
+	{
+		memoryManage = 1;
+		nToDumps = 0;
+		timesToTakeDumps = NULL;
+		argv++;
+		while(isint(*argv))
+		{
+			nToDumps++;
+			timesToTakeDumps = realloc(timesToTakeDumps,nToDumps * sizeof(int));
+			timesToTakeDumps[nToDumps-1] = atoi(*argv);
+			argv++;
+		}
+		qsort(timesToTakeDumps,nToDumps,sizeof(int),cmpInts);
+		if(nToDumps)
+			nextTimeToDumpIndex = 0;
+	}
   
   //Algorithm Parsing
-  if (!strcmp(*argv,"FCFS")) {
+  if (!strcasecmp(*argv,"FCFS")) {
     alg_flag = FCFSALG;
-  } else if (!strcmp(*argv,"RR")) {
+  } else if (!strcasecmp(*argv,"RR")) {
     alg_flag = RRALG;
   } else {
     fputs("ERROR: Invalid algorithm flag.",stderr);
@@ -52,7 +83,7 @@ int main(int argc, char *argv[]) {
       usage(); 
       exit(0); 
     }
-    if (lf) fprintf(stderr,"%d\n",time_quant);
+    if (lf) fprintf(logger,"Time Quantum: %d\n",time_quant);
     argv++;
   }
   
@@ -76,7 +107,8 @@ int main(int argc, char *argv[]) {
     p->num = i+1;
   
   
-  
+  //TODO: change
+	memoryDumpStream = fopen("memDump.out","w");
   schedule(alg_flag,processes);
     
   fclose(logger);

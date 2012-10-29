@@ -23,3 +23,15 @@ void newLogSession()
 	fputs("NEW INVOCATION SESSION\n", logger);
 	fprintf(logger, "TIME: %s\n", asctime(ptm));
 }
+
+void setupMemoryDump()
+{
+	//TODO: Implement this to write to a file
+	memoryDumpStream = stdout;
+}
+
+void tearDownMemoryDump()
+{
+	//TODO: close the file stream
+	return;
+}
