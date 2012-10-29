@@ -18,7 +18,6 @@ void appendToList(FRAME_LIST* l, FRAME* f)
 		return;
 	}
 	FRAME* tmp = l->last;
-	//TODO: Ensure that when a FRAME is created next is always NULL
 	if(tmp != NULL)
 	{
 		tmp->next = f;
@@ -84,5 +83,6 @@ void bringElementToFront(FRAME_LIST* l, FRAME* f)
 
 void destroyList(FRAME_LIST* l)
 {
-	//TODO: cleanup
+	recursiveDestroyFrame(l->first);
+	free(l);
 }

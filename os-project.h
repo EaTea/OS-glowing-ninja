@@ -46,21 +46,40 @@ typedef struct {
 	//duration of each time slot
 	int* durationTimeSlots;
 
-	//actual lines
+	//actual lines stored as strings
 	char **lines;
 } PROCESS;
 
 /**
 	Frame definition for Main Memory
+	Also serves as a Doubly Linked List element
 */
 typedef struct frame {
+	//name of the process
 	char pname[BUFSIZ];
+	//the first line that the frame holds, indexed from 1
+	//a frame holds lineStart and (if it exists) lineStart+1
+	//lineStart is guaranteed to exist in process named by pname
 	int lineStart;
+	//the actual lines in the page stored as strings
 	char **page;
+	//the next frame in the linked list; should be NULL iff this is the last element
+	//in the linked list
 	struct frame* next;
+	//the previous element in the linked list; should be NULL iff this is the last
+	//element in the linked list
 	struct frame* previous;
 } FRAME;
+/*
+	Safely constructs a new frame that is guaranteed to be safely insertable into a new linked list
+	returns a new frame that has been dynamically allocated
+	*/
 FRAME* newFrame();
+/*
+	Recursively destroy a FRAME
+	Accepts the memory location of the FRAME to destroy
+	Will then proceed to destroy its successor until the entire list has been destroyed
+	 */
 void recursiveDestroyFrame(FRAME*);
 
 
@@ -88,12 +107,18 @@ extern void print_schedule(PROCESS*);
  */
 extern int isint(char*);
 
+/*
+	Simulates the First-Come-First-Serve scheduling algorithm on an array of processes
+	Accepts an array of PROCESSes that has been sorted by starting time
+
+	 */
 extern void fcfs_algorithm(PROCESS*);
 
 /*
  * Simulates a Round-Robin scheduling on an array of PROCESSes.
  * Accepts a array of PROCESSes that has been sorted by starting time and an integer time quantum.
  * N.B.: as the time quantum approaches 0, interesting behaviour can occur.
+ * N.B.: Time quantum of 0 is not allowed
  */
 extern void rr_algorithm(PROCESS*,int);
 
@@ -124,19 +149,56 @@ extern char **files;
  */
 extern PROCESS * parseFiles(char*);
 
+/**
+	Flag to signify which algorithm should be used for the run of the program
+	*/
 extern int alg_flag;
+/*
+	The time quantum to run the program; only used in Round-Robin Scheduling
+	 */
 extern int time_quant;
+/*
+	 Number of files to process; essentially, number of PROCESSes
+	 */
 extern int nfiles;
+/*
+	Run time of simulation so far
+	 */
 extern int timeSoFar;
+/*
+	Memory management flag; is 1 if memory management is desired for this invocation
+	of the program
+	 */
 extern int memoryManage;
+/*
+	 Sentinel value that states that no value was recorded in this line of the page
+	 */
 extern const char* NO_VALUE;
 
+/*
+	Times when dumps should be outputted to the memory dump output stream
+	*/
 extern int* timesToTakeDumps;
+/*
+	Number of dumps to take
+	*/
 extern int nToDumps;
+/*
+	The index of the next time a dump should occur
+	*/
 extern int nextTimeToDumpIndex;
 
+/*
+	A file stream where all logging output should be sent to
+	*/
 extern FILE *logger;
+/*
+	An output stream where all memory dumps should be sent to
+	*/
 extern FILE *memoryDumpStream;
+/*
+	Logging flag; true iff logging can occur
+	*/
 extern int lf;
 
 /*
@@ -150,12 +212,6 @@ extern void setupLogging();
  * Prints a new logging session to the log file.
  */
 extern void newLogSession();
-
-/*
- * TODO: I believe this will end up becoming deprecated.
- * Computes the running time of a single PROCESS data structure
- */
-extern void computeProcessRunTime(PROCESS*);
 
 /*
  * Processes a single line of a process
@@ -217,50 +273,152 @@ extern void tearDownCache();
 /*
 	 Sets up the memory dump stream
 	*/
-extern void setupMemoryDump();
+extern void setupMemoryDump(char*);
 
 /*
 	 Closes the memory dump stream
 	*/
 extern void tearDownMemoryDump();
 
+/*
+	Initialises the main memory
+	*/
 extern void initialiseMainMemory();
 
+/*
+	Closes the main memory linked list
+	*/
 extern void tearDownMainMemory();
 
+/*
+	Load into a main memory a process at a line
+	Accepts a PROCESS* and a line number
+	Loads that line and the line after it in the process to the main memory
+	 */
 extern void loadIntoMainMemory(PROCESS*,int);
 
+/*
+	Accepts a FRAME and updates the main memory by putting the frame at the
+	beginning of the linked list representing the main memory
+	 */
 extern void updateMainMemory(FRAME*);
+
+/*
+	Destroys the memory associated with storing an array of processes
+	Accepts the pointer to the array of processes and the number of processes in the array
+ */
+extern void clearProcesses(PROCESS*, int);
 
 
 
 /**QUEUE**/
 /**Definition of a Circular Array Queue*/
 typedef struct q {
+	//elements of the queue; these are processes
   PROCESS **els;
+	//first element of the queue (index)
   int first;
+	//last element of the queue (index)
   int last;
+	
+	//N.B.: we do not keep the length of the queue we can check if the queue is full iff
+	//(last+2)%length == first
+
+	//length of the array
   int length;
 } QUEUE;
 
-extern QUEUE new_queue(int);
-extern PROCESS *front(QUEUE);
+/*
+	Construct a new Circular Array Queue
+	Accepts the size of the array to construct
+	Please don't use a size 0 or less
+	*/
+extern QUEUE* new_queue(int);
+/*
+	return the process at the front of the queue specified by QUEUE
+	Accepts a pointer to a QUEUE
+	Returns a pointer to the process that was at the front of the queue
+	*/
+extern PROCESS *front(QUEUE*);
+/*
+	return the process at the front of the queue specified by QUEUE
+	This function will remove the first element of the QUEUE
+	Accepts a pointer to a QUEUE
+	Returns a pointer to the process at the front of the queue
+	*/
 extern PROCESS *dequeue(QUEUE*);
+/*
+	Enqueue an element onto the queue
+	Accepts a pointer to a QUEUE and a pointer to the PROCESS to enqueue
+	The PROCESS* is the element to load ontot he queue
+	 */
 extern void enqueue(QUEUE*, PROCESS*);
-extern int is_empty(QUEUE);
-extern int is_full(QUEUE);
+/*
+	Returns 1 if the queue data structure specified by the QUEUE* is
+	empty, and 0 otherwise
+	 */
+extern int is_empty(QUEUE*);
+/*
+	Returns 1 if the queue data structure specified by the QUEUE* is
+	full, and 0 otherwise
+	 */
+extern int is_full(QUEUE*);
+
+/*
+	Frees the memory allocated to the QUEUE
+	Accepts the QUEUE pointer to destroy
+	N.B.: It does NOT free the underlying elements of the QUEUE, only the space allocated for their pointers
+	*/
+extern void destroy(QUEUE*);
 
 /**LIST**/
-/**Definition of a Doubly linked list using a window*/
+/**Definition of a Doubly linked list*/
 typedef struct l
 {
+	//first element of the list, is NULL if empty
 	FRAME* first;
+	//last element of the list, is NULL if empty
 	FRAME* last;
+	//the size ofthe list, that is, the number of elements inside it
 	int size;
 } FRAME_LIST;
 
+/*
+	Constructs a new linked list and initialises its pointers to NULL
+	 */
 FRAME_LIST* newList();
+/*
+	Appends an element to the END of the list
+	Frame list is a non-NULL element of the queue
+	FRAME is a non-NULL element of the list
+	This FRAME is considered to be "well-formed"
+	Its first and last elements have not been set, as
+	it will be the case that they may be reset/changed during the
+	operation of the LIST
+	 */
 void appendToList(FRAME_LIST*,FRAME*);
+/*
+	Does a linear scan to see whether a frame containing
+	a page that records the line and process exists
+	FRAME_LIST is the list to scan
+	char* is the process name
+	int is the line number to look for
+	FRAME** the address of the FRAME which matches our criterion
+
+	Note that a frame f is considered to contain it iff
+		f.lineStart == line
+		strcmp(f.pname,pname) == 0
+	*/
 int isInList(FRAME_LIST*,char*,int,FRAME**);
+/*
+	Bring an element (FRAME*) to the front of a FRAME_LIST*
+	Accepts the FRAME_LIST to modify
+	Accepts the FRAME to bring to the front of the list
+	Does nothing if the FRAME is the front if the list already
+	 */
 void bringElementToFront(FRAME_LIST*,FRAME*);
+/*
+	Destroys a list in a recursive fashion
+	Accepts a FRAME_LIST* to destroy
+	 */
 void destroyList(FRAME_LIST*);

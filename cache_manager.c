@@ -55,7 +55,6 @@ int inCache(PROCESS* p, int lineNumber)
 
 void loadIntoCache(FRAME* f1, FRAME* f2)
 {
-	dumpCacheToStream(memoryDumpStream);
 	if(f1 == NULL)
 	{
 		//TODO: ERROR
@@ -72,6 +71,7 @@ void loadIntoCache(FRAME* f1, FRAME* f2)
 	strcpy(pageOne[0],f1->page[0]);
 	strcpy(pageOne[1],f1->page[1]);
 	updateMainMemory(f1);
+	//no secondary frame to load
 	if(f2 != NULL)
 	{
 	//hit the end of process whilst attempting to load process into cache
