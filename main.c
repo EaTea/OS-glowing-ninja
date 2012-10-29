@@ -2,11 +2,11 @@
 #include <strings.h>
 
 int schedule(int flag,PROCESS *ps) {
-	//if(memoryManage)
-	//{
+	if(memoryManage)
+	{
 		initialiseMainMemory();
 		initialiseCache();
-	//}
+	}
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
@@ -16,11 +16,11 @@ int schedule(int flag,PROCESS *ps) {
   if (lf) fprintf(logger,"Scheduling complete.\n");
   print_schedule(ps);
 
-	//if(memoryManage)
-	//{
+	if(memoryManage)
+	{
 		tearDownCache();
 		tearDownMainMemory();
-	//}
+	}
 	
   return 0;
 }
