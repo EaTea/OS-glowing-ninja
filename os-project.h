@@ -51,8 +51,8 @@ typedef struct {
 } PROCESS;
 
 /**
-	Frame definition
-	*/
+	Frame definition for Main Memory
+*/
 typedef struct frame {
 	char pname[BUFSIZ];
 	int lineStart;
@@ -64,12 +64,20 @@ FRAME* newFrame();
 void recursiveDestroyFrame(FRAME*);
 
 
-extern char *progname;
+extern char *progname; //Program name - used in errors
+
+
 
 /*
  * Prints program usage message to standard output stream.
  */
 extern void usage();
+
+/*
+ * Prints computed schedule to standard output stream
+ */
+extern void print_schedule(PROCESS*); 
+
 
 /*
  * Returns whether a given char* is an integer; that is, does the given char*
@@ -242,6 +250,8 @@ extern void enqueue(QUEUE*, PROCESS*);
 extern int is_empty(QUEUE);
 extern int is_full(QUEUE);
 
+/**LIST**/
+/**Definition of a Doubly linked list using a window*/
 typedef struct l
 {
 	FRAME* first;

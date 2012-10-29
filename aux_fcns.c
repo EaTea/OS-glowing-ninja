@@ -48,3 +48,29 @@ void computeProcessRunTime(PROCESS* p)
 	}
 	p->runningTime = runTime;
 }
+
+/*	Prints the process schedule to Stdout 
+ *	To the tune of PSY's Gangnam Style
+ *	http://www.youtube.com/watch?v=9bZkp7q19f0
+ */
+void print_schedule(PROCESS *ps) {
+	printf("\nResult of Schedule:\n");
+	for (int y = 0; y < nfiles; y++) {
+		//HEEEEY SEXY LADY
+		printf("%s:\t",ps[y].pname);
+		//OP OP
+		for (int j = 0; j < ps[y].nTimeSlots; j++) {
+			//OPPA GANGNAM STYLE!
+			printf("(%d, %d)\t",ps[y].scheduledTimeSlots[j],
+			ps[y].durationTimeSlots[j]);
+		} printf("\n");
+		//OP OP
+		printf("File contents:\n");
+		for(int j = 0; j < ps[y].nlines; j++)
+		{
+			//OPPA GANGNAM STYLE!
+			printf("\t%s\n", ps[y].lines[j]);
+		}
+		printf("\n");
+	}
+}

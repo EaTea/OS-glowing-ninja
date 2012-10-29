@@ -21,7 +21,8 @@ int processLine(PROCESS* p, int* currentLine, int nIfs, int timeRemaining)
 	//if there is an IFLINE find it
 	int iflineIndex = IFLINESearch(iflines,*currentLine,nIfs);
 	int retVal = 0;
-	printf("InCache?%d\n",inCache(p,*currentLine));
+	if (lf && inCache(p,*currentLine))
+		fprintf(logger,"Process is in cache!\n");
 	//if line in cache
 	if(!memoryManage || inCache(p, *currentLine))
 	{
@@ -102,14 +103,15 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	int overallTime = 0;
 	if(!timeslice)
 	{
-		//TODO: Lo9g and kill
-		//fprintf(
+		fprintf(stderr,"Attempting to run program with a time quantum of 0 "\
+					    "does not make sense.\n");
+		usage();
 		exit(1);
 	}
 	//run process until completion
 	if(timeslice == -1)
 	{
-		printf("%s\n",p->pname);
+		if (lf) fprintf(logger,"Active process: %s\n",p->pname);
 		while(p->curLine <= p->nlines)
 		{
 			//printf("%s\n", p->pname);
@@ -122,18 +124,21 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				//page fault
 				if(timeConsumed == -1)
 				{
-					printf("Page Fault; missing the first 2 lines\n");
+					if (lf) 
+						fprintf(logger,"Page Fault; missing the first 2 lines\n");
 					loadIntoMainMemory(p,p->curLine);
 				}
 				else if(timeConsumed == -2)
 				{
-					printf("Page Fault; missing the last 2 lines\n");
+					if (lf)
+						fprintf(logger,"Page Fault; missing the last 2 lines\n");
 					loadIntoMainMemory(p,p->curLine+2);
 				}
 			}
 			else
 			{
-				printf("TimeSoFar:%d\n", overallTime);
+				if (lf)
+					fprintf(logger,"Overall Time So Far:%d\n", overallTime);
 				overallTime += timeConsumed;
 			}
 			//TODO
@@ -159,12 +164,14 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				//page fault
 				if(timeConsumed == -1)
 				{
-					printf("Page Fault; missing the first 2 lines\n");
+					if (lf)
+						printf("Page Fault; missing the first 2 lines\n");
 					loadIntoMainMemory(p,p->curLine);
 				}
 				else if(timeConsumed == -2)
 				{
-					printf("Page Fault; missing the last 2 lines\n");
+					if (lf)
+						printf("Page Fault; missing the last 2 lines\n");
 					loadIntoMainMemory(p,p->curLine+2);
 				}
 
@@ -186,6 +193,7 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 	}
 	//TODO: Add in that scheduled time slots is updated
 	//TODO: Verify this worked
+	//NB: Pretty sure it does!!
 	(p->nTimeSlots)++;
 	p->scheduledTimeSlots = (int*)realloc(p->scheduledTimeSlots, p->nTimeSlots * sizeof(int));
 	p->durationTimeSlots = (int*)realloc(p->durationTimeSlots, p->nTimeSlots * sizeof(int));

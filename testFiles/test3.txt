@@ -5,4 +5,4 @@ if i < 5 i=i+1 goto 5
 d
 e
 if j < 2 j=j+1 goto 1
-i forgot this line before i edited it, lol penis
+i forgot this line before i edited it, lol

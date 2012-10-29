@@ -14,7 +14,7 @@ for i in *.jobs
 		../build/os-project RR $k $i
 	done
 	echo "FCFS: First Come First Serve Scheduling Algorithm"
-	../build/os-project FCFS $i
+	../build/os-project -m 5 10 20 FCFS $i
 done
 mv program.log ../logs/$(date '+%F-%T')-program.log
 echo "The .log file has been moved to ../logs."

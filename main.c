@@ -1,4 +1,5 @@
 #include "os-project.h"
+#include <strings.h>
 
 int schedule(int flag,PROCESS *ps) {
 	//if(memoryManage)
@@ -9,26 +10,11 @@ int schedule(int flag,PROCESS *ps) {
   switch (flag) {
     case FCFSALG: fcfs_algorithm(ps); break;
     case RRALG: rr_algorithm(ps,time_quant); break;
-    default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(0); break;
+    default: fprintf(stderr,"Error: Invalid Algorithm\n"); exit(1); break;
   }
   
-  fprintf(logger,"Scheduling complete. Result of Schedule:\n");
-  //TODO: Move to print_schedule fn in auxfns.c
-  for (int y = 0; y < nfiles; y++) {
-		//HEEEEY SEXY LADY
-	printf("%s:\t",ps[y].pname);
-	//OP OP
-	for (int j = 0; j < ps[y].nTimeSlots; j++) {
-		//OPPA GANGNAM STYLE!
-		printf("(%d, %d)\t",ps[y].scheduledTimeSlots[j], ps[y].durationTimeSlots[j]);
-	} printf("\n");
-	//OP OP
-	for(int j = 0; j < ps[y].nlines; j++)
-	{
-		//OPPA GANGNAM STYLE!
-		printf("%s\n", ps[y].lines[j]);
-  }
-	}
+  if (lf) fprintf(logger,"Scheduling complete.\n");
+  print_schedule(ps);
 
 	//if(memoryManage)
 	//{
@@ -54,7 +40,7 @@ int main(int argc, char *argv[]) {
 	newLogSession();
   progname = *argv;
   argc--; argv++; //Skip progname
-  if (argc > 3 || argc < 2) {
+  if (argc < 2) {
     fputs("ERROR: Invalid arguments\n",stderr);
     usage();
     exit(0);
@@ -71,6 +57,7 @@ int main(int argc, char *argv[]) {
 			nToDumps++;
 			timesToTakeDumps = realloc(timesToTakeDumps,nToDumps * sizeof(int));
 			timesToTakeDumps[nToDumps-1] = atoi(*argv);
+			argv++;
 		}
 		qsort(timesToTakeDumps,nToDumps,sizeof(int),cmpInts);
 		if(nToDumps)
@@ -78,9 +65,9 @@ int main(int argc, char *argv[]) {
 	}
   
   //Algorithm Parsing
-  if (!strcmp(*argv,"FCFS")) {
+  if (!strcasecmp(*argv,"FCFS")) {
     alg_flag = FCFSALG;
-  } else if (!strcmp(*argv,"RR")) {
+  } else if (!strcasecmp(*argv,"RR")) {
     alg_flag = RRALG;
   } else {
     fputs("ERROR: Invalid algorithm flag.",stderr);

@@ -24,7 +24,6 @@ void rr_algorithm(PROCESS* processes, int tq)
 	
 	while (i < nfiles || !is_empty(q)) {
 		
-		printf("t=%d\n",timeSoFar);
 		//Start of a quantum cycle
 		//Enqueue any elements that are ready to start
 		while (i < nfiles && pp->stime <= timeSoFar) {

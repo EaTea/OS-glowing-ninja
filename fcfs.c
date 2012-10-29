@@ -1,9 +1,6 @@
 #include "os-project.h"
 
-//TODO: Note that I've used nfiles as the number of processes. We need to fail gracefully if a file is invalid.
-//This is mostly done.
-
-/***/
+/**First Come First Served algorithm**/
 void fcfs_algorithm(PROCESS* processes)
 {
 	qsort(processes,nfiles,sizeof(PROCESS),cmpByStartTime);
