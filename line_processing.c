@@ -6,7 +6,7 @@
  * Returns the index number in the IFLINEs array corresponding to the IFLINE on currentLine, or -1 if no such IFLINE exists
  */
 static int IFLINESearch(IFLINE* iflines, int currentLine, int nIfs)
-{
+{	
 	for(int i = 0; i < nIfs; i++)
 	{
 		if(currentLine == iflines[i].originline)
