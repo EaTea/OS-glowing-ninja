@@ -136,13 +136,15 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				if(timeConsumed == -1)
 				{
 					if (lf) 
-						fprintf(logger,"Page Fault; missing the first 2 lines\n");
+						fprintf(logger,"Page Fault at time %d; missing the "\
+								"first 2 lines\n",tmpTime);
 					loadIntoMainMemory(p,p->curLine);
 				}
 				else if(timeConsumed == -2)
 				{
 					if (lf)
-						fprintf(logger,"Page Fault; missing the last 2 lines\n");
+						fprintf(logger,"Page Fault at time %d; missing the "\
+								"first 2 lines\n",tmpTime);
 					loadIntoMainMemory(p,p->curLine+2);
 				}
 			}
@@ -174,13 +176,15 @@ int runProcessInTimeSlice(PROCESS* p, int timeslice)
 				if(timeConsumed == -1)
 				{
 					if (lf)
-						fprintf(logger,"Page Fault; missing the first 2 lines\n");
+						fprintf(logger,"Page Fault at time %d; missing the "\
+								"first 2 lines\n",tmpTime);
 					loadIntoMainMemory(p,p->curLine);
 				}
 				else if(timeConsumed == -2)
 				{
 					if (lf)
-						fprintf(logger,"Page Fault; missing the last 2 lines\n");
+						fprintf(logger,"Page Fault at time %d; missing the "\
+								"last 2 lines\n",tmpTime);
 					loadIntoMainMemory(p,p->curLine+2);
 				}
 				//in this case, the processLine function has returned 0

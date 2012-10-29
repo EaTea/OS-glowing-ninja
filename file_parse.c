@@ -167,8 +167,8 @@ PROCESS *readFiles() {
 	pp = processes;
 	if (lf) 
 		for (int i = 0; i < nfiles; i++,pp++)
-			fprintf(logger,"Process %s has starttime %d and running time %d,"\
-					"with %d ifs\n",files[i],pp->stime,pp->runningTime,pp->nifs);
+			fprintf(logger,"Process %s has starttime %d and %d if-lines\n",
+					files[i],pp->stime,pp->nifs);
 	return processes;
 }
 

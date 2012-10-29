@@ -34,7 +34,6 @@ PROCESS *dequeue(QUEUE *q) {
 void enqueue(QUEUE *q, PROCESS *p) {
   if (!is_full(*q)) {
     q->last = (q->last+1)%q->length;
-    printf("ENQUEUING: First = %d, Last = %d\n",q->first,q->last);
     q->els[q->last] = p;
   } else puts("Array full!!!");
 }
