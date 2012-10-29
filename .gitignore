@@ -7,3 +7,4 @@ build/*
 *.o
 *.log
 *out*
+os-project

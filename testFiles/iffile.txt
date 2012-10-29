@@ -1,7 +1,0 @@
-7
-I don't know
-Blah
-HOLYMACKARAL
-ORSOMETHING
-LINECOUNTAH
-if i < 3 i=i+1 goto 2
