@@ -12,6 +12,7 @@ for i in *.jobs
 		do
 		echo "Time Quantum: $k"
 		../build/os-project RR $k $i
+		../build/os-project -m 10 20 30 RR $k $i
 	done
 	echo "FCFS: First Come First Serve Scheduling Algorithm"
 	../build/os-project -m 5 10 20 FCFS $i
