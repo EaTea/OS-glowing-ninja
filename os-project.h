@@ -336,24 +336,82 @@ typedef struct q {
 extern QUEUE* new_queue(int);
 /*
 	return the process at the front of the queue specified by QUEUE
+	Accepts a pointer to a QUEUE
+	Returns a pointer to the process that was at the front of the queue
 	*/
 extern PROCESS *front(QUEUE*);
+/*
+	return the process at the front of the queue specified by QUEUE
+	This function will remove the first element of the QUEUE
+	Accepts a pointer to a QUEUE
+	Returns a pointer to the process at the front of the queue
+	*/
 extern PROCESS *dequeue(QUEUE*);
+/*
+	Enqueue an element onto the queue
+	Accepts a pointer to a QUEUE and a pointer to the PROCESS to enqueue
+	The PROCESS* is the element to load ontot he queue
+	 */
 extern void enqueue(QUEUE*, PROCESS*);
+/*
+	Returns 1 if the queue data structure specified by the QUEUE* is
+	empty, and 0 otherwise
+	 */
 extern int is_empty(QUEUE*);
+/*
+	Returns 1 if the queue data structure specified by the QUEUE* is
+	full, and 0 otherwise
+	 */
 extern int is_full(QUEUE*);
 
 /**LIST**/
-/**Definition of a Doubly linked list using a window*/
+/**Definition of a Doubly linked list*/
 typedef struct l
 {
+	//first element of the list, is NULL if empty
 	FRAME* first;
+	//last element of the list, is NULL if empty
 	FRAME* last;
+	//the size ofthe list, that is, the number of elements inside it
 	int size;
 } FRAME_LIST;
 
+/*
+	Constructs a new linked list and initialises its pointers to NULL
+	 */
 FRAME_LIST* newList();
+/*
+	Appends an element to the END of the list
+	Frame list is a non-NULL element of the queue
+	FRAME is a non-NULL element of the list
+	This FRAME is considered to be "well-formed"
+	Its first and last elements have not been set, as
+	it will be the case that they may be reset/changed during the
+	operation of the LIST
+	 */
 void appendToList(FRAME_LIST*,FRAME*);
+/*
+	Does a linear scan to see whether a frame containing
+	a page that records the line and process exists
+	FRAME_LIST is the list to scan
+	char* is the process name
+	int is the line number to look for
+	FRAME** the address of the FRAME which matches our criterion
+
+	Note that a frame f is considered to contain it iff
+		f.lineStart == line
+		strcmp(f.pname,pname) == 0
+	*/
 int isInList(FRAME_LIST*,char*,int,FRAME**);
+/*
+	Bring an element (FRAME*) to the front of a FRAME_LIST*
+	Accepts the FRAME_LIST to modify
+	Accepts the FRAME to bring to the front of the list
+	Does nothing if the FRAME is the front if the list already
+	 */
 void bringElementToFront(FRAME_LIST*,FRAME*);
+/*
+	Destroys a list in a recursive fashion
+	Accepts a FRAME_LIST* to destroy
+	 */
 void destroyList(FRAME_LIST*);
